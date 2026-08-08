@@ -7,9 +7,15 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.samruddhilad07.farmerapp",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
-    "plugins": ["expo-dev-client"],
+    "plugins": [
+      "expo-dev-client"
+    ],
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
@@ -21,6 +27,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5e473c31-164b-444b-9254-a6039ddc9ee1"
+      }
     }
   }
 }

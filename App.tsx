@@ -19,6 +19,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './src/api/queryClient';
 import { AuthProvider } from './src/contexts/AuthContext';
 import { LanguageProvider } from './src/contexts/LanguageContext';
+import { ThemeProvider } from './src/contexts/ThemeContext';
 import { RootNavigator } from './src/navigation/RootNavigator';
 
 const isWeb = Platform.OS === 'web';
@@ -32,10 +33,12 @@ export default function App() {
             <QueryClientProvider client={queryClient}>
               <AuthProvider>
                 <LanguageProvider>
-                  <NavigationContainer>
-                    <StatusBar style="dark" />
-                    <RootNavigator />
-                  </NavigationContainer>
+                  <ThemeProvider>
+                    <NavigationContainer>
+                      <StatusBar style="auto" />
+                      <RootNavigator />
+                    </NavigationContainer>
+                  </ThemeProvider>
                 </LanguageProvider>
               </AuthProvider>
             </QueryClientProvider>

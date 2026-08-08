@@ -27,20 +27,117 @@ const headerStyles = StyleSheet.create({
 });
 
 // ── About Screen ──────────────────────────────────────────────────────
+// ── About Screen ──────────────────────────────────────────────────────
 export const AboutScreen: React.FC<any> = ({ navigation }) => (
   <View style={styles.container}>
     <ScreenHeader title="About" onBack={() => navigation.goBack()} />
-    <ScrollView contentContainerStyle={styles.content}>
-      <View style={styles.logoContainer}>
-        <Ionicons name="leaf" size={40} color={Colors.white} />
+    <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      {/* App Header Section */}
+      <View style={styles.aboutHeader}>
+        <View style={styles.logoContainer}>
+          <Ionicons name="leaf" size={40} color={Colors.white} />
+        </View>
+        <Text style={styles.appName}>Farmer AI</Text>
+        <Text style={styles.version}>Version 1.0.0</Text>
       </View>
-      <Text style={styles.appName}>Farmer AI</Text>
-      <Text style={styles.version}>Version 1.0.0</Text>
-      <Text style={styles.bodyText}>
-        Farmer AI Voice Assistant is designed to help Indian farmers discover government schemes, check eligibility, get agricultural guidance, and access information in their preferred language.{'\n\n'}
-        Built with ❤️ for Indian farmers.{'\n\n'}
-        Our mission is to bridge the information gap and empower farmers with AI-powered assistance in 12 regional languages.
-      </Text>
+
+      {/* Main Info Card */}
+      <View style={aboutStyles.card}>
+        <Text style={aboutStyles.cardTitle}>About Farmer AI</Text>
+        <Text style={aboutStyles.cardText}>
+          Farmer AI is a premium, voice-first agricultural assistant designed to bridge the digital gap for Indian farmers. By providing trilingual and regional voice assistance, it allows farmers to easily discover government welfare schemes, check eligibility, and get direct farm advice just by speaking.
+        </Text>
+      </View>
+
+      {/* Vision & Mission */}
+      <View style={aboutStyles.card}>
+        <Text style={aboutStyles.cardTitle}>Vision & Mission</Text>
+        <View style={aboutStyles.bulletRow}>
+          <Ionicons name="eye-outline" size={20} color={Colors.primary[600]} style={aboutStyles.bulletIcon} />
+          <View style={aboutStyles.bulletTextWrap}>
+            <Text style={aboutStyles.bulletLabel}>Our Vision</Text>
+            <Text style={aboutStyles.bulletText}>To democratize access to agricultural intelligence and government support for every farmer in India, regardless of language or literacy barriers.</Text>
+          </View>
+        </View>
+        <View style={aboutStyles.bulletRow}>
+          <Ionicons name="flag-outline" size={20} color={Colors.primary[600]} style={aboutStyles.bulletIcon} />
+          <View style={aboutStyles.bulletTextWrap}>
+            <Text style={aboutStyles.bulletLabel}>Our Mission</Text>
+            <Text style={aboutStyles.bulletText}>To build highly localized, voice-enabled AI solutions that empower farming communities with instant, actionable guidance on crop health, soil welfare, market rates, and welfare eligibility.</Text>
+          </View>
+        </View>
+      </View>
+
+      {/* AI Features */}
+      <View style={aboutStyles.card}>
+        <Text style={aboutStyles.cardTitle}>Core AI Features</Text>
+
+        <View style={aboutStyles.featureItem}>
+          <View style={aboutStyles.featureHeader}>
+            <Ionicons name="document-text" size={18} color="#FF8A00" />
+            <Text style={aboutStyles.featureName}>Government Scheme Support</Text>
+          </View>
+          <Text style={aboutStyles.featureDesc}>Automatic eligibility mapping and trilingual instructions for central and state schemes.</Text>
+        </View>
+
+        <View style={aboutStyles.featureItem}>
+          <View style={aboutStyles.featureHeader}>
+            <Ionicons name="flower" size={18} color="#FF8A00" />
+            <Text style={aboutStyles.featureName}>Crop Recommendation</Text>
+          </View>
+          <Text style={aboutStyles.featureDesc}>Smart soil-to-crop guidance based on geographic indicators, land sizes, and regional inputs.</Text>
+        </View>
+
+        <View style={aboutStyles.featureItem}>
+          <View style={aboutStyles.featureHeader}>
+            <Ionicons name="bug" size={18} color="#FF8A00" />
+            <Text style={aboutStyles.featureName}>Crop Disease Detection</Text>
+          </View>
+          <Text style={aboutStyles.featureDesc}>Identify crop pests and leaf leaf-spots instantly using AI-powered diagnostic recommendations.</Text>
+        </View>
+
+        <View style={aboutStyles.featureItem}>
+          <View style={aboutStyles.featureHeader}>
+            <Ionicons name="thunderstorm" size={18} color="#FF8A00" />
+            <Text style={aboutStyles.featureName}>Weather Forecast</Text>
+          </View>
+          <Text style={aboutStyles.featureDesc}>Micro-local weather insights with voice alerts to protect crops during storm events.</Text>
+        </View>
+      </View>
+
+      {/* Technology Stack */}
+      <View style={aboutStyles.card}>
+        <Text style={aboutStyles.cardTitle}>Technology Stack</Text>
+        <Text style={aboutStyles.cardText}>Built with state-of-the-art technologies for smooth multi-platform delivery:</Text>
+        <View style={aboutStyles.tagContainer}>
+          {['React Native', 'Expo', 'TypeScript', 'Axios', 'React Query', 'LLM Agents', 'Whisper Speech API'].map((tag) => (
+            <View key={tag} style={aboutStyles.tag}>
+              <Text style={aboutStyles.tagText}>{tag}</Text>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      {/* Contact & Support */}
+      <View style={aboutStyles.card}>
+        <Text style={aboutStyles.cardTitle}>Contact & Support</Text>
+        <View style={aboutStyles.bulletRow}>
+          <Ionicons name="mail-outline" size={16} color={Colors.primary[600]} />
+          <Text style={aboutStyles.contactText}>Email: support@farmervoice.in</Text>
+        </View>
+        <View style={aboutStyles.bulletRow}>
+          <Ionicons name="call-outline" size={16} color={Colors.primary[600]} />
+          <Text style={aboutStyles.contactText}>Helpline: +91 1800 200 3456</Text>
+        </View>
+        <TouchableOpacity
+          style={aboutStyles.privacyButton}
+          onPress={() => navigation.navigate('PrivacyPolicy')}
+        >
+          <Text style={aboutStyles.privacyText}>View Privacy Policy</Text>
+          <Ionicons name="chevron-forward" size={14} color={Colors.primary[600]} />
+        </TouchableOpacity>
+      </View>
+      <View style={{ height: 40 }} />
     </ScrollView>
   </View>
 );
@@ -143,6 +240,10 @@ export const NotFoundScreen: React.FC<{ onGoHome?: () => void }> = ({ onGoHome }
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.white },
   content: { padding: Spacing.xl, paddingBottom: 100 },
+  aboutHeader: {
+    alignItems: 'center',
+    marginBottom: Spacing.md,
+  },
   logoContainer: {
     width: 72, height: 72, borderRadius: 20, backgroundColor: Colors.primary[500],
     justifyContent: 'center', alignItems: 'center', marginBottom: Spacing.lg,
@@ -162,4 +263,110 @@ const styles = StyleSheet.create({
   centerTitle: { ...Typography.h4, color: Colors.text.primary, textAlign: 'center', marginBottom: Spacing.sm },
   centerSubtitle: { ...Typography.body, color: Colors.text.secondary, textAlign: 'center', lineHeight: 22 },
   notFoundCode: { fontSize: 64, fontWeight: '800', color: Colors.primary[200], marginBottom: Spacing.md },
+});
+
+const aboutStyles = StyleSheet.create({
+  card: {
+    backgroundColor: Colors.white,
+    borderRadius: 20,
+    padding: Spacing.lg,
+    marginBottom: Spacing.lg,
+    borderWidth: 1.5,
+    borderColor: Colors.border,
+    shadowColor: Colors.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.03,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: Colors.primary[600],
+    marginBottom: Spacing.md,
+  },
+  cardText: {
+    fontSize: 13,
+    color: Colors.text.secondary,
+    lineHeight: 18,
+  },
+  bulletRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginVertical: Spacing.xs,
+    gap: Spacing.sm,
+  },
+  bulletIcon: {
+    marginTop: 2,
+  },
+  bulletTextWrap: {
+    flex: 1,
+  },
+  bulletLabel: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: Colors.text.primary,
+  },
+  bulletText: {
+    fontSize: 12,
+    color: Colors.text.secondary,
+    lineHeight: 16,
+  },
+  featureItem: {
+    marginBottom: Spacing.md,
+  },
+  featureHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+    marginBottom: 2,
+  },
+  featureName: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: Colors.text.primary,
+  },
+  featureDesc: {
+    fontSize: 12,
+    color: Colors.text.secondary,
+    lineHeight: 16,
+    marginLeft: 22,
+  },
+  tagContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.xs,
+    marginTop: Spacing.sm,
+  },
+  tag: {
+    backgroundColor: Colors.primary[50],
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+    borderColor: 'rgba(46, 125, 50, 0.1)',
+  },
+  tagText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: Colors.primary[700],
+  },
+  contactText: {
+    fontSize: 13,
+    color: Colors.text.secondary,
+  },
+  privacyButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: Spacing.lg,
+    paddingTop: Spacing.md,
+    borderTopWidth: 1,
+    borderTopColor: Colors.divider,
+  },
+  privacyText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: Colors.primary[600],
+  },
 });

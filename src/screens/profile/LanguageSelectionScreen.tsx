@@ -14,12 +14,20 @@ import { ProfileScreenProps } from '../../navigation/types';
 import { Language } from '../../types/api.types';
 
 const DEFAULT_LANGUAGES: Language[] = [
-  { code: 'en', name: 'English' }, { code: 'hi', name: 'Hindi' },
-  { code: 'mr', name: 'Marathi' }, { code: 'ta', name: 'Tamil' },
-  { code: 'te', name: 'Telugu' }, { code: 'kn', name: 'Kannada' },
-  { code: 'gu', name: 'Gujarati' }, { code: 'pa', name: 'Punjabi' },
-  { code: 'bn', name: 'Bengali' }, { code: 'or', name: 'Odia' },
-  { code: 'ml', name: 'Malayalam' }, { code: 'as', name: 'Assamese' },
+  { code: 'mr', name: 'मराठी' },
+  { code: 'en', name: 'English' },
+  { code: 'hi', name: 'हिन्दी' },
+  { code: 'ta', name: 'தமிழ்' },
+  { code: 'te', name: 'తెలుగు' },
+  { code: 'kn', name: 'ಕನ್ನಡ' },
+  { code: 'gu', name: 'ગુજરાતી' },
+  { code: 'pa', name: 'ਪੰਜਾਬੀ' },
+  { code: 'bn', name: 'বাংলা' },
+  { code: 'or', name: 'ଓଡ଼ିଆ' },
+  { code: 'ml', name: 'മലയാളം' },
+  { code: 'as', name: 'असमिया' },
+  { code: 'ahr', name: 'अहिराणी' },
+  { code: 'kok', name: 'कोंकणी' },
 ];
 
 export const LanguageSelectionScreen: React.FC<ProfileScreenProps<'LanguageSelection'>> = ({ navigation }) => {

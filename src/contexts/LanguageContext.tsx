@@ -12,7 +12,7 @@ interface LanguageContextType {
   isLoading: boolean;
 }
 
-const DEFAULT_LANGUAGE: Language = { code: 'en', name: 'English' };
+const DEFAULT_LANGUAGE: Language = { code: 'mr', name: 'मराठी' };
 const LANGUAGE_KEY = 'app_selected_language';
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);

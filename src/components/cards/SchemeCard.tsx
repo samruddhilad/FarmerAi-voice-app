@@ -1,11 +1,7 @@
-/**
- * SchemeCard Component
- * Displays scheme info: category badge, title, description, amount, CTA
- */
-
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Colors, Spacing, BorderRadius, Typography, Shadows } from '../../theme';
 import { Scheme } from '../../types/api.types';
 import { getCategoryIcon, getCategoryColor } from '../../utils/category';
@@ -16,215 +12,180 @@ interface SchemeCardProps {
   compact?: boolean;
 }
 
-const ACCENT = Colors.primary[600];
-const ACCENT_LIGHT = Colors.mint[100];
-
-
 export const SchemeCard: React.FC<SchemeCardProps> = ({ scheme, onPress, compact = false }) => {
   const iconName = getCategoryIcon(scheme.category);
-  const iconBg = getCategoryColor(scheme.category);
-  const benefitText = scheme.amount || scheme.benefits || scheme.eligibility_criteria || 'View details';
+  const benefitText = scheme.amount || scheme.benefits || 'View details';
+  const isCentral = scheme.type === 'Central';
+
+  // Soft agricultural gradients for backgrounds
+  const cardGradients: [string, string] = isCentral
+    ? ['#FFFFFF', '#F0FDF4'] // White to soft mint
+    : ['#FFFFFF', '#FFF8F0']; // White to soft orange tint
+
+  const accentColor = isCentral ? Colors.primary[600] : '#FF8A00';
 
   return (
     <TouchableOpacity
-      style={[styles.container, compact ? styles.compactContainer : styles.horizontalContainer]}
       onPress={() => onPress(scheme)}
-      activeOpacity={0.86}
+      activeOpacity={0.88}
+      style={[styles.pressable, compact ? styles.compactWidth : styles.horizontalWidth]}
       accessibilityLabel={`Scheme: ${scheme.title}`}
     >
-      {/* Top Header Row with Icon and Badge */}
-      <View style={styles.topRow}>
-        <View style={[styles.iconContainer, { backgroundColor: ACCENT }]}> 
-          <Ionicons name={iconName} size={22} color={Colors.white} />
-        </View>
-
-        {scheme.category && (
-          <View style={[styles.badge, { backgroundColor: getCategoryColor(scheme.category) }]}> 
-            <Text style={styles.badgeText}>{scheme.category}</Text>
-          </View>
-        )}
-      </View>
-
-      {/* Title */}
-      <Text style={[styles.title, compact ? styles.compactTitle : styles.horizontalTitle]} numberOfLines={2}>
-        {scheme.title}
-      </Text>
-
-      {/* Description */}
-      {!compact && (
-        <Text style={styles.description} numberOfLines={2}>
-          {scheme.description}
-        </Text>
-      )}
-
-      {/* Amount Badge / CTA */}
-      {compact ? (
-        <View style={styles.footerRowCompact}>
-          <View style={styles.benefitBlockCompact}>
-            <Text style={styles.benefitLabel}>BENEFIT</Text>
-            <Text style={styles.benefitTextCompact} numberOfLines={1}>
-              {benefitText}
-            </Text>
-          </View>
-
-          <View style={styles.actionRow}>
-            <TouchableOpacity style={[styles.iconAction, styles.micAction]} onPress={() => onPress(scheme)}>
-              <Ionicons name="mic-outline" size={22} color={Colors.white} />
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.iconAction, styles.arrowAction]} onPress={() => onPress(scheme)}>
-              <Ionicons name="arrow-forward" size={22} color={ACCENT} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      ) : (
-        <>
-          <View style={styles.benefitBlock}>
-            <Text style={styles.benefitLabel}>BENEFIT</Text>
-            <Text style={styles.benefitText} numberOfLines={2}>
-              {benefitText}
-            </Text>
-          </View>
-          <View style={styles.footerRow}>
-            <View style={styles.cta}>
-              <Text style={styles.ctaText}>Know More</Text>
-              <Ionicons name="arrow-forward" size={15} color={ACCENT} />
+      <LinearGradient
+        colors={cardGradients}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={[styles.container, Shadows.card]}
+      >
+        {/* Top Row: Icon, Status Indicator, Action Arrow */}
+        <View style={styles.topRow}>
+          <View style={styles.topLeft}>
+            <View style={[styles.iconContainer, { backgroundColor: isCentral ? Colors.primary[50] : '#FFF3E0' }]}>
+              <Ionicons name={iconName} size={20} color={accentColor} />
+            </View>
+            <View style={[styles.statusBadge, { backgroundColor: isCentral ? '#E8F5E9' : '#FFF3E0' }]}>
+              <Text style={[styles.statusText, { color: accentColor }]}>
+                {isCentral ? 'Central' : 'State'}
+              </Text>
             </View>
           </View>
-        </>
-      )}
+          <Ionicons name="arrow-forward" size={18} color={accentColor} style={styles.arrowIcon} />
+        </View>
+
+        {/* Title */}
+        <Text style={styles.title} numberOfLines={compact ? 2 : 1}>
+          {scheme.title}
+        </Text>
+
+        {/* Description */}
+        <Text style={styles.description} numberOfLines={compact ? 2 : 2}>
+          {scheme.description}
+        </Text>
+
+        {/* Benefit Block */}
+        <View style={styles.benefitContainer}>
+          <View style={styles.divider} />
+          <View style={styles.benefitRow}>
+            <View style={styles.benefitLabelCol}>
+              <Text style={styles.benefitLabel}>BENEFIT</Text>
+              <Text style={[styles.benefitText, { color: accentColor }]} numberOfLines={1}>
+                {benefitText}
+              </Text>
+            </View>
+            {compact && (
+              <View style={[styles.quickMic, { backgroundColor: accentColor }]}>
+                <Ionicons name="mic-outline" size={16} color={Colors.white} />
+              </View>
+            )}
+          </View>
+        </View>
+      </LinearGradient>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: Colors.white,
-    borderRadius: 24,
-    padding: Spacing.lg,
-    borderWidth: 1,
-    borderColor: Colors.gray[200],
-    width: 270,
+  pressable: {
     marginBottom: Spacing.md,
-    shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.03,
-    shadowRadius: 6,
-    elevation: 2,
   },
-  compactContainer: {
+  horizontalWidth: {
+    width: 270,
+    height: 200, // Equal and compact card heights for dashboard
+    marginRight: Spacing.md,
+  },
+  compactWidth: {
     width: '100%',
   },
-  horizontalContainer: {
-    width: 270,
-    marginRight: Spacing.md,
+  container: {
+    flex: 1,
+    borderRadius: 20, // 20px border radius
+    padding: Spacing.md,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.8)',
+    justifyContent: 'space-between',
   },
   topRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: Spacing.md,
-  },
-  iconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 14,
-    backgroundColor: Colors.mint[100],
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  badge: {
-    backgroundColor: Colors.mint[100],
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    borderRadius: 12,
-  },
-  badgeText: {
-    fontSize: 12,
-    color: Colors.primary[600],
-    fontWeight: '700',
-  },
-  title: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: Colors.text.primary,
     marginBottom: Spacing.xs,
-    lineHeight: 22,
   },
-  compactTitle: {
-    fontSize: 20,
-  },
-  horizontalTitle: {
-    fontSize: 16,
-  },
-  description: {
-    fontSize: 13,
-    color: Colors.text.secondary,
-    marginBottom: Spacing.md,
-    lineHeight: 19,
-  },
-  benefitBlock: {
-    marginBottom: Spacing.md,
-  },
-  benefitBlockCompact: {
-    flex: 1,
-    marginRight: Spacing.md,
-  },
-  benefitLabel: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: Colors.gray[500],
-    letterSpacing: 0.8,
-    marginBottom: 2,
-  },
-  benefitText: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: Colors.primary[600],
-    lineHeight: 19,
-  },
-  benefitTextCompact: {
-    fontSize: 15,
-    fontWeight: '800',
-    color: Colors.primary[700],
-    lineHeight: 20,
-  },
-  footerRowCompact: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: Spacing.md,
-  },
-  actionRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    gap: Spacing.sm,
-  },
-  iconAction: {
-    width: 54,
-    height: 54,
-    borderRadius: BorderRadius.full,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  micAction: {
-    backgroundColor: ACCENT,
-  },
-  arrowAction: {
-    backgroundColor: ACCENT_LIGHT,
-  },
-  footerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  cta: {
+  topLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.xs,
   },
-  ctaText: {
-    fontSize: 14,
+  iconContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  statusBadge: {
+    paddingVertical: 3,
+    paddingHorizontal: 8,
+    borderRadius: BorderRadius.sm,
+  },
+  statusText: {
+    fontSize: 10,
+    fontWeight: '800',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  arrowIcon: {
+    padding: 2,
+  },
+  title: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: Colors.text.primary,
+    lineHeight: 18,
+    marginTop: 2,
+  },
+  description: {
+    fontSize: 12,
+    color: Colors.text.secondary,
+    lineHeight: 16,
+    marginVertical: 2,
+  },
+  benefitContainer: {
+    marginTop: 'auto',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+    marginVertical: Spacing.xs,
+  },
+  benefitRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  benefitLabelCol: {
+    flex: 1,
+  },
+  benefitLabel: {
+    fontSize: 9,
     fontWeight: '700',
-    color: ACCENT,
+    color: Colors.text.secondary,
+    letterSpacing: 0.5,
+  },
+  benefitText: {
+    fontSize: 12,
+    fontWeight: '800',
+    lineHeight: 15,
+  },
+  quickMic: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: Colors.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
   },
 });

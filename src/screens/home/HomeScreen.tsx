@@ -1,63 +1,91 @@
 /**
- * Home Screen
- * Greeting, Voice Card, Feature Badges, Quick Actions, Featured Schemes, Recent Updates
+ * Home Screen — Farmer AI
+ * Uses the exact farm landscape background image (assets/farm_banner.png) for the hero card
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
-  FlatList,
   TouchableOpacity,
   RefreshControl,
+  ImageBackground,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors, Spacing, BorderRadius, Typography, Shadows } from '../../theme';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Colors, Spacing } from '../../theme';
 import { Header } from '../../components/layout/Header';
-import { SchemeCard } from '../../components/cards/SchemeCard';
-import { QuickActionCard } from '../../components/cards/QuickActionCard';
-import { NotificationCard } from '../../components/cards/NotificationCard';
-import { FloatingActionButton } from '../../components/layout/FloatingActionButton';
-import { SkeletonSchemeCard } from '../../components/common/SkeletonLoader';
 import { useSchemes } from '../../hooks/useSchemes';
-import { useQuickActions } from '../../hooks/useQuickActions';
 import { useNotifications } from '../../hooks/useNotifications';
-import { useAuthContext } from '../../contexts/AuthContext';
 import { useLanguageContext } from '../../contexts/LanguageContext';
+import { useThemeContext } from '../../contexts/ThemeContext';
 import { HomeScreenProps } from '../../navigation/types';
-import { Scheme, Notification as AppNotification } from '../../types/api.types';
 
-const TOPICS = [
-  { label: 'Horticulture', icon: 'leaf-outline' as const },
-  { label: 'Irrigation', icon: 'water-outline' as const },
-  { label: 'Mechanization', icon: 'construct-outline' as const },
-  { label: 'Tribal Development', icon: 'people-outline' as const },
-  { label: 'Crop Development', icon: 'flower-outline' as const },
-];
-
-const ASK_ITEMS = [
-  { title: 'Which schemes am I eligible for?', icon: 'mic-outline' as const },
-  { title: 'PM Kisan Status Check', icon: 'mic-outline' as const },
-  { title: 'How to apply for crop insurance?', icon: 'mic-outline' as const },
+const SERVICE_ITEMS = [
+  {
+    title: 'पीक निवड',
+    subtitle: 'AI शिफारस',
+    icon: 'leaf' as const,
+    bg: '#F0F9F1',
+    circleBg: '#86EFAC',
+    iconColor: '#14532D',
+    arrowColor: '#15803D',
+  },
+  {
+    title: 'रोग निदान',
+    subtitle: 'पीक तपासणी',
+    icon: 'bug' as const,
+    bg: '#FDF2F2',
+    circleBg: '#FCA5A5',
+    iconColor: '#7F1D1D',
+    arrowColor: '#DC2626',
+  },
+  {
+    title: 'हवामान अंदाज',
+    subtitle: '7 दिवसांचा अंदाज',
+    icon: 'cloud' as const,
+    bg: '#F0F7FF',
+    circleBg: '#93C5FD',
+    iconColor: '#1E3A8A',
+    arrowColor: '#2563EB',
+  },
+  {
+    title: 'शासकीय योजना',
+    subtitle: 'पात्रता तपासा',
+    icon: 'person' as const,
+    bg: '#F5F3FF',
+    circleBg: '#C4B5FD',
+    iconColor: '#4C1D95',
+    arrowColor: '#7C3AED',
+  },
+  {
+    title: 'बाजार भाव',
+    subtitle: 'बाजार भाव आणि EMI',
+    icon: 'storefront' as const,
+    bg: '#FFF7ED',
+    circleBg: '#FDBA74',
+    iconColor: '#7C2D12',
+    arrowColor: '#EA580C',
+  },
+  {
+    title: 'खत सल्ला',
+    subtitle: 'NPK शिफारस',
+    icon: 'flask' as const,
+    bg: '#ECFDF5',
+    circleBg: '#6EE7B7',
+    iconColor: '#064E3B',
+    arrowColor: '#059669',
+  },
 ];
 
 export const HomeScreen: React.FC<HomeScreenProps<'Home'>> = ({ navigation }) => {
-  const { user } = useAuthContext();
   const { selectedLanguage } = useLanguageContext();
+  const { isDarkMode, colors: themeColors } = useThemeContext();
   const schemesQuery = useSchemes({ limit: 5 });
   const notificationsQuery = useNotifications();
 
-  const greeting = useMemo(() => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Good Morning';
-    if (hour < 17) return 'Good Afternoon';
-    return 'Good Evening';
-  }, []);
-
-  const schemes = schemesQuery.data?.pages?.[0]?.data?.items || [];
-  const notifications = (notificationsQuery.data as any)?.data?.slice?.(0, 3) || [];
   const isRefreshing = schemesQuery.isRefetching;
 
   const handleRefresh = () => {
@@ -65,20 +93,13 @@ export const HomeScreen: React.FC<HomeScreenProps<'Home'>> = ({ navigation }) =>
     notificationsQuery.refetch();
   };
 
-  const handleSchemePress = (scheme: Scheme) => {
-    navigation.navigate('SchemeDetails', { schemeId: scheme.id });
-  };
-
-  const handleNotificationPress = (notif: AppNotification) => {
-    navigation.navigate('Notifications');
-  };
-
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: themeColors.background }]}>
+      {/* Header with anchored language dropdown popover, theme toggle, and profile icon */}
       <Header
-        selectedLanguage={selectedLanguage.name}
-        onLanguagePress={() => navigation.navigate('ProfileTab', { screen: 'LanguageSelection' } as any)}
         onNotificationPress={() => navigation.navigate('Notifications')}
+        onProfilePress={() => navigation.navigate('ProfileTab', { screen: 'Profile' } as any)}
+        notificationCount={3}
       />
 
       <ScrollView
@@ -94,179 +115,88 @@ export const HomeScreen: React.FC<HomeScreenProps<'Home'>> = ({ navigation }) =>
           />
         }
       >
-        {/* Main Pale Mint Hero Section Container */}
-        <View style={styles.heroCard}>
-          {/* Live Badge */}
-          <View style={styles.liveBadge}>
-            <View style={styles.liveDot} />
-            <Text style={styles.liveText}>Live</Text>
-          </View>
-
-          {/* Greeting Titles */}
-          <Text style={styles.greetingTitle}>
-            Namaste! 🌱{'\n'}
-            <Text style={styles.greetingBold}>{greeting}</Text>
-          </Text>
-
-          <Text style={styles.greetingSubtitle}>
-            Your AI assistant for government schemes & agri guidance.
-          </Text>
-
-          {/* Voice Assistant Mic Section */}
-          <TouchableOpacity
-            style={styles.voiceSection}
-            onPress={() => navigation.navigate('VoiceAssistant')}
-            activeOpacity={0.85}
+        {/* Top Hero Banner using the provided farm landscape background image */}
+        <View style={styles.bannerWrapper}>
+          <ImageBackground
+            source={require('../../../assets/farm_banner.png')}
+            resizeMode="cover"
+            style={[styles.heroImageBackground, { borderColor: isDarkMode ? '#065F46' : '#DCFCE7' }]}
+            imageStyle={styles.heroImageStyle}
           >
-            <View style={styles.voiceIconContainer}>
-              <Ionicons name="mic-outline" size={36} color={Colors.white} />
-            </View>
-
-            <View style={styles.voiceRight}>
-              <Text style={styles.voiceTitle}>Tap to Speak</Text>
-              <Text style={styles.voiceSubtitle}>
-                Ask anything in your language. Available in 12 regional languages.
-              </Text>
-              <View style={styles.voiceBars}>
-                {[12, 18, 26, 20, 14].map((h, i) => (
-                  <View key={i} style={[styles.voiceBar, { height: h }]} />
-                ))}
+            <LinearGradient
+              colors={
+                isDarkMode
+                  ? ['rgba(17, 24, 39, 0.92)', 'rgba(17, 24, 39, 0.55)', 'rgba(17, 24, 39, 0.05)']
+                  : ['rgba(232, 245, 233, 0.95)', 'rgba(232, 245, 233, 0.65)', 'rgba(232, 245, 233, 0.05)']
+              }
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
+              style={styles.heroGradientMask}
+            >
+              <View style={styles.bannerContent}>
+                <Text style={[styles.bannerGreeting, { color: isDarkMode ? '#6EE7B7' : '#15803D' }]}>
+                  नमस्कार शेतकरी मित्रा! 👋
+                </Text>
+                <Text style={[styles.bannerTitle, { color: isDarkMode ? '#F9FAFB' : '#14532D' }]}>
+                  आजची शेती माहिती
+                </Text>
+                <Text style={[styles.bannerSubtitle, { color: isDarkMode ? '#D1D5DB' : '#334155' }]}>
+                  AI च्या मदतीने अधिक उत्पादन, अधिक नफा.
+                </Text>
               </View>
-            </View>
-          </TouchableOpacity>
-
-          {/* Feature Badges Pills */}
-          <View style={styles.heroBadges}>
-            {[
-              { icon: 'document-text-outline' as const, label: '12 Languages' },
-              { icon: 'flash-outline' as const, label: 'Instant Reply' },
-              { icon: 'leaf-outline' as const, label: 'Free to Use' },
-            ].map((badge, idx) => (
-              <View key={idx} style={styles.heroBadge}>
-                <Ionicons name={badge.icon} size={15} color={Colors.primary[600]} />
-                <Text style={styles.heroBadgeText}>{badge.label}</Text>
-              </View>
-            ))}
-          </View>
+            </LinearGradient>
+          </ImageBackground>
         </View>
 
-        {/* Quick Ask Section */}
+        {/* Quick Services Section ("झटपट सेवा") */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <View style={styles.sectionTitleRow}>
-              <Ionicons name="flash-outline" size={20} color={Colors.primary[600]} />
-              <Text style={styles.sectionTitle}>Ask</Text>
-            </View>
+            <Text style={[styles.sectionTitle, { color: themeColors.textPrimary }]}>झटपट सेवा</Text>
             <TouchableOpacity onPress={() => navigation.navigate('VoiceAssistant')}>
-              <Text style={styles.seeAll}>View all →</Text>
+              <Text style={[styles.seeAllText, { color: themeColors.textSecondary }]}>सर्व पहा {'>'}</Text>
             </TouchableOpacity>
           </View>
 
-          <FlatList
-            data={ASK_ITEMS}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.horizontalList}
-            keyExtractor={(_, i) => i.toString()}
-            renderItem={({ item }) => (
-              <QuickActionCard
-                title={item.title}
-                icon={item.icon}
-                onPress={() => navigation.navigate('VoiceAssistant')}
-              />
-            )}
-          />
-        </View>
-
-        {/* More Topics */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>More Topics</Text>
-          <View style={styles.topicsGrid}>
-            {TOPICS.map((topic, idx) => (
+          <View style={styles.serviceGrid}>
+            {SERVICE_ITEMS.map((item, idx) => (
               <TouchableOpacity
                 key={idx}
-                style={styles.topicChip}
-                activeOpacity={0.7}
-                onPress={() =>
-                  navigation.navigate('SchemesTab', {
-                    screen: 'SchemesList',
-                    params: { category: topic.label },
-                  } as any)
-                }
+                style={[
+                  styles.serviceCard,
+                  { backgroundColor: isDarkMode ? themeColors.card : item.bg, borderColor: isDarkMode ? themeColors.border : 'rgba(0,0,0,0.04)' },
+                ]}
+                activeOpacity={0.8}
+                onPress={() => navigation.navigate('VoiceAssistant')}
               >
-                <Ionicons name={topic.icon} size={16} color={Colors.primary[600]} />
-                <Text style={styles.topicText}>{topic.label}</Text>
+                <View style={styles.cardHeaderRow}>
+                  {/* Circular Logo Icon Container */}
+                  <View style={[styles.serviceIconCircle, { backgroundColor: item.circleBg }]}>
+                    <Ionicons name={item.icon} size={22} color={item.iconColor} />
+                  </View>
+                  <Ionicons name="chevron-forward" size={18} color={isDarkMode ? themeColors.textSecondary : item.arrowColor} />
+                </View>
+
+                <Text style={[styles.serviceTitle, { color: themeColors.textPrimary }]}>{item.title}</Text>
+                <Text style={[styles.serviceSubtitle, { color: themeColors.textSecondary }]}>{item.subtitle}</Text>
               </TouchableOpacity>
             ))}
           </View>
         </View>
 
-        {/* Featured Schemes */}
+        {/* Today's Farming Tip ("आजचा शेती सल्ला") */}
         <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <View style={styles.sectionTitleRow}>
-              <Ionicons name="star-outline" size={20} color={Colors.primary[600]} />
-              <Text style={styles.sectionTitle}>Featured Schemes</Text>
+          <View style={[styles.tipCard, { backgroundColor: isDarkMode ? '#374151' : '#FFFDF0', borderColor: isDarkMode ? '#4B5563' : '#FEF08A' }]}>
+            <View style={styles.tipIconWrap}>
+              <Ionicons name="sunny-outline" size={24} color="#D97706" />
             </View>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('SchemesTab' as any)}
-            >
-              <Text style={styles.seeAll}>See all →</Text>
-            </TouchableOpacity>
-          </View>
-
-          {schemesQuery.isLoading ? (
-            <FlatList
-              data={[1, 2, 3]}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.horizontalList}
-              keyExtractor={(_, i) => i.toString()}
-              renderItem={() => <SkeletonSchemeCard />}
-            />
-          ) : (
-            <FlatList
-              data={schemes}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.horizontalList}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => (
-                <SchemeCard scheme={item} onPress={handleSchemePress} />
-              )}
-              ListEmptyComponent={
-                <Text style={styles.emptyText}>No schemes available</Text>
-              }
-            />
-          )}
-        </View>
-
-        {/* Recent Updates */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <View style={styles.sectionTitleRow}>
-              <Ionicons name="megaphone-outline" size={20} color={Colors.primary[600]} />
-              <Text style={styles.sectionTitle}>Recent Updates</Text>
+            <View style={styles.tipTextWrap}>
+              <Text style={[styles.tipTitle, { color: isDarkMode ? '#F59E0B' : '#92400E' }]}>आजचा शेती सल्ला</Text>
+              <Text style={[styles.tipSubtitle, { color: isDarkMode ? '#E5E7EB' : '#4B5563' }]}>
+                आज ठिबक सिंचन केल्यास पाण्याची 40-60% बचत होऊ शकते.
+              </Text>
             </View>
-            <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
-              <Text style={styles.seeAll}>View all →</Text>
-            </TouchableOpacity>
           </View>
-
-          {notifications.map((notif: AppNotification, idx: number) => (
-            <NotificationCard
-              key={notif.id || idx}
-              notification={notif}
-              onPress={handleNotificationPress}
-            />
-          ))}
-
-          {notifications.length === 0 && !notificationsQuery.isLoading && (
-            <Text style={styles.emptyText}>No recent updates</Text>
-          )}
         </View>
-
-        <View style={{ height: 110 }} />
       </ScrollView>
     </View>
   );
@@ -275,194 +205,148 @@ export const HomeScreen: React.FC<HomeScreenProps<'Home'>> = ({ navigation }) =>
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: Spacing['3xl'],
+    paddingBottom: 100,
   },
 
-  /* Pale Mint Hero Section Card */
-  heroCard: {
-    marginHorizontal: Spacing.lg,
-    marginTop: Spacing.xs,
-    backgroundColor: Colors.mint[100],
-    borderRadius: 28,
-    padding: Spacing.xl,
+  /* Hero Image Background Banner */
+  bannerWrapper: {
+    paddingHorizontal: 16,
+    paddingTop: 12,
   },
-  liveBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    backgroundColor: Colors.white,
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    borderRadius: BorderRadius.full,
-    gap: 6,
-    marginBottom: Spacing.md,
+  heroImageBackground: {
+    borderRadius: 22,
+    overflow: 'hidden',
     borderWidth: 1,
-    borderColor: Colors.border,
-  },
-  liveDot: {
-    width: 7,
-    height: 7,
-    borderRadius: 4,
-    backgroundColor: Colors.primary[600],
-  },
-  liveText: {
-    fontSize: 12,
-    color: Colors.primary[600],
-    fontWeight: '700',
-  },
-  greetingTitle: {
-    fontSize: 26,
-    fontWeight: '700',
-    color: Colors.text.primary,
-    lineHeight: 34,
-  },
-  greetingBold: {
-    fontWeight: '800',
-    color: Colors.text.primary,
-  },
-  greetingSubtitle: {
-    fontSize: 14,
-    color: Colors.text.secondary,
-    marginTop: 6,
-    marginBottom: Spacing.xl,
-    lineHeight: 20,
-  },
-
-  /* Voice Mic Section */
-  voiceSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.lg,
-    marginBottom: Spacing.xl,
-  },
-  voiceIconContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: Colors.primary[600],
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: Colors.primary[900],
+    minHeight: 140,
+    elevation: 3,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.08,
     shadowRadius: 8,
-    elevation: 6,
   },
-  voiceRight: {
+  heroImageStyle: {
+    borderRadius: 22,
+  },
+  heroGradientMask: {
+    paddingVertical: 20,
+    paddingHorizontal: 20,
     flex: 1,
+    justifyContent: 'center',
+    borderRadius: 22,
   },
-  voiceTitle: {
-    fontSize: 18,
+  bannerContent: {
+    maxWidth: '62%',
+  },
+  bannerGreeting: {
+    fontSize: 13,
     fontWeight: '700',
-    color: Colors.primary[600],
-    marginBottom: 2,
+    marginBottom: 4,
   },
-  voiceSubtitle: {
+  bannerTitle: {
+    fontSize: 23,
+    fontWeight: '800',
+    lineHeight: 29,
+    marginBottom: 6,
+  },
+  bannerSubtitle: {
     fontSize: 12,
-    color: Colors.text.secondary,
-    lineHeight: 17,
-  },
-  voiceBars: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    gap: 3,
-    marginTop: 8,
-  },
-  voiceBar: {
-    width: 4,
-    borderRadius: 2,
-    backgroundColor: Colors.primary[600],
-  },
-
-  /* Hero Feature Badges */
-  heroBadges: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  heroBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: Colors.white,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: BorderRadius.full,
-    borderWidth: 1,
-    borderColor: Colors.border,
-  },
-  heroBadgeText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: Colors.text.primary,
+    fontWeight: '500',
+    lineHeight: 18,
   },
 
   /* Sections */
   section: {
-    marginTop: Spacing['2xl'],
-    paddingHorizontal: Spacing.lg,
+    marginTop: 20,
+    paddingHorizontal: 16,
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: Spacing.lg,
-  },
-  sectionTitleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.xs,
+    marginBottom: 12,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: Colors.text.primary,
+    fontSize: 17,
+    fontWeight: '800',
   },
-  seeAll: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: Colors.primary[600],
-  },
-  horizontalList: {
-    paddingRight: Spacing.lg,
-    gap: Spacing.md,
-  },
-  topicsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
-  },
-  topicChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    backgroundColor: Colors.white,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: BorderRadius.full,
-    borderWidth: 1,
-    borderColor: Colors.gray[200],
-    shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.02,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  topicText: {
+  seeAllText: {
     fontSize: 13,
     fontWeight: '600',
-    color: Colors.text.primary,
   },
-  emptyText: {
+
+  /* Quick Services Grid */
+  serviceGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  serviceCard: {
+    width: '48%',
+    borderRadius: 20,
+    padding: 14,
+    minHeight: 105,
+    justifyContent: 'space-between',
+    borderWidth: 1,
+  },
+  cardHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  serviceIconCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 2,
+  },
+  serviceTitle: {
+    fontSize: 15,
+    fontWeight: '800',
+    marginTop: 4,
+  },
+  serviceSubtitle: {
+    fontSize: 11,
+    fontWeight: '500',
+    marginTop: 2,
+  },
+
+  /* Farming Tip Card */
+  tipCard: {
+    borderRadius: 18,
+    padding: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    borderWidth: 1,
+  },
+  tipIconWrap: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#FEF3C7',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  tipTextWrap: {
+    flex: 1,
+  },
+  tipTitle: {
     fontSize: 14,
-    color: Colors.text.tertiary,
-    textAlign: 'center',
-    padding: Spacing.xl,
+    fontWeight: '800',
+  },
+  tipSubtitle: {
+    fontSize: 12,
+    fontWeight: '500',
+    marginTop: 2,
+    lineHeight: 17,
   },
 });

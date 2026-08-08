@@ -1,15 +1,16 @@
 /**
- * Profile Screen — User info, menu items, logout
+ * Profile Screen — User info, menu items, logout with back navigation button
  */
 
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Spacing, BorderRadius, Typography, Shadows } from '../../theme';
+import { Header } from '../../components/layout/Header';
 import { Button } from '../../components/common/Button';
 import { Dialog } from '../../components/common/Dialog';
 import { useAuthContext } from '../../contexts/AuthContext';
+import { useThemeContext } from '../../contexts/ThemeContext';
 import { useLogout } from '../../hooks/useAuth';
 import { ProfileScreenProps } from '../../navigation/types';
 
@@ -32,8 +33,8 @@ const MENU_ITEMS: MenuItem[] = [
 ];
 
 export const ProfileScreen: React.FC<ProfileScreenProps<'Profile'>> = ({ navigation }) => {
-  const insets = useSafeAreaInsets();
   const { user, logout } = useAuthContext();
+  const { isDarkMode, colors: themeColors } = useThemeContext();
   const logoutMutation = useLogout();
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
@@ -43,22 +44,36 @@ export const ProfileScreen: React.FC<ProfileScreenProps<'Profile'>> = ({ navigat
     await logout();
   };
 
-  return (
-    <View style={[styles.container, { paddingTop: insets.top + Spacing.md }]}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-        <Text style={styles.screenTitle}>Profile</Text>
+  const handleBack = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      navigation.navigate('HomeTab' as any);
+    }
+  };
 
+  return (
+    <View style={[styles.container, { backgroundColor: themeColors.background }]}>
+      {/* Header with BACK ARROW option */}
+      <Header
+        showBack
+        onBackPress={handleBack}
+        title="Profile"
+        showLanguageSelector
+      />
+
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         {/* User card */}
-        <View style={[styles.userCard, Shadows.card]}>
+        <View style={[styles.userCard, { backgroundColor: themeColors.card, borderColor: themeColors.border }, Shadows.card]}>
           <View style={styles.avatar}>
             <Ionicons name="person" size={32} color={Colors.primary[500]} />
           </View>
           <View style={styles.userInfo}>
-            <Text style={styles.userName}>{user?.name || 'Farmer'}</Text>
-            <Text style={styles.userEmail}>{user?.email || user?.mobile || 'Not logged in'}</Text>
+            <Text style={[styles.userName, { color: themeColors.textPrimary }]}>{user?.name || 'Farmer'}</Text>
+            <Text style={[styles.userEmail, { color: themeColors.textSecondary }]}>{user?.email || user?.mobile || 'Not logged in'}</Text>
           </View>
           <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
-            <Ionicons name="create-outline" size={20} color={Colors.gray[500]} />
+            <Ionicons name="create-outline" size={20} color={themeColors.textSecondary} />
           </TouchableOpacity>
         </View>
 
@@ -67,20 +82,20 @@ export const ProfileScreen: React.FC<ProfileScreenProps<'Profile'>> = ({ navigat
           {MENU_ITEMS.map((item, idx) => (
             <TouchableOpacity
               key={idx}
-              style={styles.menuItem}
+              style={[styles.menuItem, { borderBottomColor: themeColors.border }]}
               onPress={() => navigation.navigate(item.screen as any)}
               activeOpacity={0.6}
             >
               <View style={styles.menuIconContainer}>
                 <Ionicons name={item.icon} size={20} color={Colors.primary[600]} />
               </View>
-              <Text style={styles.menuLabel}>{item.label}</Text>
+              <Text style={[styles.menuLabel, { color: themeColors.textPrimary }]}>{item.label}</Text>
               {item.badge && (
                 <View style={styles.menuBadge}>
                   <Text style={styles.menuBadgeText}>{item.badge}</Text>
                 </View>
               )}
-              <Ionicons name="chevron-forward" size={18} color={Colors.gray[400]} />
+              <Ionicons name="chevron-forward" size={18} color={themeColors.textSecondary} />
             </TouchableOpacity>
           ))}
         </View>
@@ -96,7 +111,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps<'Profile'>> = ({ navigat
           style={{ marginTop: Spacing['2xl'] }}
         />
 
-        <Text style={styles.version}>Version 1.0.0</Text>
+        <Text style={[styles.version, { color: themeColors.textSecondary }]}>Version 1.0.0</Text>
       </ScrollView>
 
       <Dialog
@@ -114,38 +129,37 @@ export const ProfileScreen: React.FC<ProfileScreenProps<'Profile'>> = ({ navigat
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.white },
+  container: { flex: 1 },
   scrollContent: { padding: Spacing.xl, paddingBottom: 100 },
-  screenTitle: { ...Typography.h3, color: Colors.text.primary, marginBottom: Spacing.xl },
   userCard: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: Colors.white,
+    flexDirection: 'row', alignItems: 'center',
     borderRadius: BorderRadius.xl, padding: Spacing.xl, gap: Spacing.lg,
-    borderWidth: 1, borderColor: Colors.gray[100], marginBottom: Spacing['2xl'],
+    borderWidth: 1, marginBottom: Spacing['2xl'],
   },
   avatar: {
-    width: 56, height: 56, borderRadius: 28, backgroundColor: Colors.primary[50],
+    width: 56, height: 56, borderRadius: 28, backgroundColor: '#DCFCE7',
     justifyContent: 'center', alignItems: 'center',
   },
   userInfo: { flex: 1 },
-  userName: { ...Typography.h5, color: Colors.text.primary, marginBottom: 2 },
-  userEmail: { ...Typography.bodySm, color: Colors.text.secondary },
+  userName: { ...Typography.h5, marginBottom: 2 },
+  userEmail: { ...Typography.bodySm },
   menuContainer: { gap: Spacing.xxs },
   menuItem: {
     flexDirection: 'row', alignItems: 'center', paddingVertical: Spacing.lg,
-    gap: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.divider,
+    gap: Spacing.md, borderBottomWidth: 1,
   },
   menuIconContainer: {
-    width: 36, height: 36, borderRadius: 10, backgroundColor: Colors.primary[50],
+    width: 36, height: 36, borderRadius: 10, backgroundColor: '#DCFCE7',
     justifyContent: 'center', alignItems: 'center',
   },
-  menuLabel: { ...Typography.label, color: Colors.text.primary, flex: 1 },
+  menuLabel: { ...Typography.label, flex: 1 },
   menuBadge: {
     backgroundColor: Colors.primary[500], borderRadius: 10,
     paddingHorizontal: Spacing.sm, paddingVertical: 2,
   },
   menuBadgeText: { fontSize: 10, fontWeight: '700', color: Colors.white },
   version: {
-    ...Typography.caption, color: Colors.text.tertiary, textAlign: 'center',
+    ...Typography.caption, textAlign: 'center',
     marginTop: Spacing['3xl'],
   },
 });

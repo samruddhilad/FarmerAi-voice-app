@@ -13,9 +13,9 @@ import axios, {
 } from 'axios';
 import { ApiError } from '../types/api.types';
 
-// ── Placeholder Base URL ──────────────────────────────────────────────
-// Update this when the backend is deployed
-export const BASE_URL = 'https://api.farmervoice.example.com/api/v1';
+// ── Configurable Base URL ─────────────────────────────────────────────
+export const BASE_URL =
+  process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
 
 // ── Token Storage Interface ───────────────────────────────────────────
 // This will be connected to expo-secure-store via AuthContext
