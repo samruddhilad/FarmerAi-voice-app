@@ -38,6 +38,12 @@ export type HomeStackParamList = {
   VoiceAssistant: undefined;
   SchemeDetails: { schemeId: string };
   Notifications: undefined;
+  CropSelection: undefined;
+  DiseaseDiagnosis: undefined;
+  Weather: undefined;
+  Schemes: undefined;
+  MarketPrices: undefined;
+  FertilizerAdvice: undefined;
 };
 
 // ─── Schemes Stack ────────────────────────────────────────────────────

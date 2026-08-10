@@ -11,32 +11,26 @@ import { Button } from '../../components/common/Button';
 import { Dialog } from '../../components/common/Dialog';
 import { useAuthContext } from '../../contexts/AuthContext';
 import { useThemeContext } from '../../contexts/ThemeContext';
+import { useLanguageContext } from '../../contexts/LanguageContext';
 import { useLogout } from '../../hooks/useAuth';
 import { ProfileScreenProps } from '../../navigation/types';
-
-interface MenuItem {
-  icon: keyof typeof Ionicons.glyphMap;
-  label: string;
-  screen: string;
-  badge?: string;
-}
-
-const MENU_ITEMS: MenuItem[] = [
-  { icon: 'settings-outline', label: 'Settings', screen: 'Settings' },
-  { icon: 'language-outline', label: 'Language', screen: 'LanguageSelection' },
-  { icon: 'bookmark-outline', label: 'Bookmarks', screen: 'Bookmarks' },
-  { icon: 'chatbubbles-outline', label: 'Chat History', screen: 'ConversationHistory' },
-  { icon: 'help-circle-outline', label: 'Help & Support', screen: 'Help' },
-  { icon: 'information-circle-outline', label: 'About', screen: 'About' },
-  { icon: 'shield-checkmark-outline', label: 'Privacy Policy', screen: 'PrivacyPolicy' },
-  { icon: 'document-text-outline', label: 'Terms & Conditions', screen: 'TermsConditions' },
-];
 
 export const ProfileScreen: React.FC<ProfileScreenProps<'Profile'>> = ({ navigation }) => {
   const { user, logout } = useAuthContext();
   const { isDarkMode, colors: themeColors } = useThemeContext();
+  const { t, selectedLanguage } = useLanguageContext();
   const logoutMutation = useLogout();
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+
+  const menuItems = [
+    { icon: 'settings-outline' as const, label: t('settings'), screen: 'Settings' },
+    { icon: 'language-outline' as const, label: t('language'), screen: 'LanguageSelection' },
+    { icon: 'bookmark-outline' as const, label: t('bookmarks'), screen: 'Bookmarks' },
+    { icon: 'chatbubbles-outline' as const, label: t('conversationHistory'), screen: 'ConversationHistory' },
+    { icon: 'help-circle-outline' as const, label: t('helpSupport'), screen: 'Help' },
+    { icon: 'shield-checkmark-outline' as const, label: t('privacyPolicy'), screen: 'PrivacyPolicy' },
+    { icon: 'document-text-outline' as const, label: t('termsConditions'), screen: 'TermsConditions' },
+  ];
 
   const handleLogout = async () => {
     setShowLogoutDialog(false);
@@ -54,11 +48,10 @@ export const ProfileScreen: React.FC<ProfileScreenProps<'Profile'>> = ({ navigat
 
   return (
     <View style={[styles.container, { backgroundColor: themeColors.background }]}>
-      {/* Header with BACK ARROW option */}
       <Header
         showBack
         onBackPress={handleBack}
-        title="Profile"
+        title={t('profileTab')}
         showLanguageSelector
       />
 
@@ -69,8 +62,8 @@ export const ProfileScreen: React.FC<ProfileScreenProps<'Profile'>> = ({ navigat
             <Ionicons name="person" size={32} color={Colors.primary[500]} />
           </View>
           <View style={styles.userInfo}>
-            <Text style={[styles.userName, { color: themeColors.textPrimary }]}>{user?.name || 'Farmer'}</Text>
-            <Text style={[styles.userEmail, { color: themeColors.textSecondary }]}>{user?.email || user?.mobile || 'Not logged in'}</Text>
+            <Text style={[styles.userName, { color: themeColors.textPrimary }]}>{user?.name || (selectedLanguage.code === 'en' ? 'Farmer Friend' : 'शेतकरी मित्र')}</Text>
+            <Text style={[styles.userEmail, { color: themeColors.textSecondary }]}>{user?.email || user?.mobile || 'farmer@farmerai.org'}</Text>
           </View>
           <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
             <Ionicons name="create-outline" size={20} color={themeColors.textSecondary} />
@@ -79,7 +72,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps<'Profile'>> = ({ navigat
 
         {/* Menu items */}
         <View style={styles.menuContainer}>
-          {MENU_ITEMS.map((item, idx) => (
+          {menuItems.map((item, idx) => (
             <TouchableOpacity
               key={idx}
               style={[styles.menuItem, { borderBottomColor: themeColors.border }]}
@@ -90,11 +83,6 @@ export const ProfileScreen: React.FC<ProfileScreenProps<'Profile'>> = ({ navigat
                 <Ionicons name={item.icon} size={20} color={Colors.primary[600]} />
               </View>
               <Text style={[styles.menuLabel, { color: themeColors.textPrimary }]}>{item.label}</Text>
-              {item.badge && (
-                <View style={styles.menuBadge}>
-                  <Text style={styles.menuBadgeText}>{item.badge}</Text>
-                </View>
-              )}
               <Ionicons name="chevron-forward" size={18} color={themeColors.textSecondary} />
             </TouchableOpacity>
           ))}
@@ -102,7 +90,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps<'Profile'>> = ({ navigat
 
         {/* Logout */}
         <Button
-          title="Logout"
+          title={selectedLanguage.code === 'en' ? 'Logout' : 'बाहेर पडा (Logout)'}
           onPress={() => setShowLogoutDialog(true)}
           variant="danger"
           size="md"
@@ -117,11 +105,11 @@ export const ProfileScreen: React.FC<ProfileScreenProps<'Profile'>> = ({ navigat
       <Dialog
         visible={showLogoutDialog}
         onClose={() => setShowLogoutDialog(false)}
-        title="Logout"
-        message="Are you sure you want to logout?"
+        title={selectedLanguage.code === 'en' ? 'Logout' : 'बाहेर पडा'}
+        message={selectedLanguage.code === 'en' ? 'Are you sure you want to logout?' : 'तुम्हाला खरोखर बाहेर पडायचे आहे का?'}
         actions={[
-          { label: 'Cancel', onPress: () => setShowLogoutDialog(false) },
-          { label: 'Logout', onPress: handleLogout, variant: 'destructive' },
+          { label: t('cancel'), onPress: () => setShowLogoutDialog(false) },
+          { label: selectedLanguage.code === 'en' ? 'Logout' : 'बाहेर पडा', onPress: handleLogout, variant: 'destructive' },
         ]}
       />
     </View>
@@ -153,11 +141,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center', alignItems: 'center',
   },
   menuLabel: { ...Typography.label, flex: 1 },
-  menuBadge: {
-    backgroundColor: Colors.primary[500], borderRadius: 10,
-    paddingHorizontal: Spacing.sm, paddingVertical: 2,
-  },
-  menuBadgeText: { fontSize: 10, fontWeight: '700', color: Colors.white },
   version: {
     ...Typography.caption, textAlign: 'center',
     marginTop: Spacing['3xl'],

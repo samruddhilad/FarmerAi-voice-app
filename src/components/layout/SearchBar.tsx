@@ -1,10 +1,10 @@
 /**
  * SearchBar Component
- * Animated search input with clear button
+ * Animated search input with clear button and theme customization support
  */
 
 import React from 'react';
-import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, TextInput, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Spacing, BorderRadius, Typography } from '../../theme';
 
@@ -15,6 +15,8 @@ interface SearchBarProps {
   onSubmit?: () => void;
   onFocus?: () => void;
   autoFocus?: boolean;
+  iconColor?: string;
+  containerStyle?: ViewStyle;
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({
@@ -24,10 +26,12 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   onSubmit,
   onFocus,
   autoFocus = false,
+  iconColor = Colors.gray[400],
+  containerStyle,
 }) => {
   return (
-    <View style={styles.container}>
-      <Ionicons name="search-outline" size={20} color={Colors.gray[400]} style={styles.icon} />
+    <View style={[styles.container, containerStyle]}>
+      <Ionicons name="search-outline" size={20} color={iconColor} style={styles.icon} />
       <TextInput
         style={styles.input}
         value={value}
@@ -42,7 +46,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
       />
       {value.length > 0 && (
         <TouchableOpacity onPress={() => onChangeText('')} style={styles.clearButton}>
-          <Ionicons name="close-circle" size={18} color={Colors.gray[400]} />
+          <Ionicons name="close-circle" size={18} color={iconColor} />
         </TouchableOpacity>
       )}
     </View>
@@ -53,8 +57,8 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.gray[50],
-    borderRadius: BorderRadius.md,
+    backgroundColor: Colors.white,
+    borderRadius: BorderRadius.lg,
     borderWidth: 1,
     borderColor: Colors.gray[200],
     paddingHorizontal: Spacing.md,

@@ -1,5 +1,5 @@
 /**
- * Notifications Screen — Notification list with mark-all-read
+ * Notifications Screen — Notification list with mark-all-read and i18n
  */
 
 import React from 'react';
@@ -11,11 +11,13 @@ import { NotificationCard } from '../../components/cards/NotificationCard';
 import { EmptyState } from '../../components/common/EmptyState';
 import { SkeletonList } from '../../components/common/SkeletonLoader';
 import { useNotifications, useMarkNotificationsRead } from '../../hooks/useNotifications';
+import { useLanguageContext } from '../../contexts/LanguageContext';
 import { HomeScreenProps } from '../../navigation/types';
 import { Notification as AppNotification } from '../../types/api.types';
 
 export const NotificationsScreen: React.FC<HomeScreenProps<'Notifications'>> = ({ navigation }) => {
   const insets = useSafeAreaInsets();
+  const { t, selectedLanguage } = useLanguageContext();
   const notificationsQuery = useNotifications();
   const markRead = useMarkNotificationsRead();
   const notifications = (notificationsQuery.data as any)?.data || [];
@@ -28,9 +30,9 @@ export const NotificationsScreen: React.FC<HomeScreenProps<'Notifications'>> = (
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color={Colors.text.primary} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Notifications</Text>
+        <Text style={styles.headerTitle}>{t('notificationsTitle')}</Text>
         <TouchableOpacity onPress={() => markRead.mutate()}>
-          <Text style={styles.markRead}>Mark all read</Text>
+          <Text style={styles.markRead}>{selectedLanguage.code === 'en' ? 'Mark all read' : 'सर्व वाचेली करा'}</Text>
         </TouchableOpacity>
       </View>
 
@@ -47,8 +49,8 @@ export const NotificationsScreen: React.FC<HomeScreenProps<'Notifications'>> = (
           <NotificationCard notification={item} onPress={() => {}} />
         )}
         ListEmptyComponent={
-          <EmptyState icon="notifications-off-outline" title="No notifications"
-            message="You'll see updates about schemes and announcements here." />
+          <EmptyState icon="notifications-off-outline" title={t('noNotifications')}
+            message={selectedLanguage.code === 'en' ? "You'll see updates about schemes and announcements here." : "इथे तुम्हाला नवनवीन शासकीय योजना व अपडेट्स दिसतील."} />
         }
       />
     </View>

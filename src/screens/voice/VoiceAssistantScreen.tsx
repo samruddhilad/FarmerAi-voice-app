@@ -16,47 +16,30 @@ import { useLanguageContext } from '../../contexts/LanguageContext';
 import { useThemeContext } from '../../contexts/ThemeContext';
 import { HomeScreenProps } from '../../navigation/types';
 
-// Quick question suggestions mapped to reference design
-const QUICK_QUESTIONS = [
-  {
-    question: 'मी कोणत्या योजनांसाठी पात्र आहे?',
-    response: 'तुमच्या सध्याच्या प्रोफाईलनुसार, तुम्ही "पीएम किसान सन्मान निधी" आणि "नमो शेतकरी महासन्मान निधी" या योजनांसाठी पात्र आहात.',
-  },
-  {
-    question: 'लाडकी बहीण योजनेची स्थिती काय आहे?',
-    response: 'मुख्यमंत्री माझी लाडकी बहीण योजनेचा हप्ता जमा झाला आहे. स्थिती तपासण्यासाठी तुमचा नोंदणी क्रमांक तपासा.',
-  },
-  {
-    question: 'आजचे हवामान कसे आहे?',
-    response: 'आजचे हवामान अंशतः ढगाळ राहील आणि तापमान २८°C ते ३२°C दरम्यान असेल. संध्याकाळी हलक्या पावसाची शक्यता आहे.',
-  },
-  {
-    question: 'बाजारभाव काय आहेत?',
-    response: 'आजचे बाजारभाव: सोयाबीन ₹४,५००/क्विंटल, कापूस ₹७,२००/क्विंटल, आणि कांदा ₹२,२००/क्विंटल आहेत.',
-  },
-];
-
 export const VoiceAssistantScreen: React.FC<HomeScreenProps<'VoiceAssistant'>> = ({
   navigation,
 }) => {
-  const { selectedLanguage } = useLanguageContext();
+  const { t, selectedLanguage } = useLanguageContext();
   const { isDarkMode, colors: themeColors } = useThemeContext();
 
   const [status, setStatus] = useState<'idle' | 'listening' | 'processing' | 'success'>('idle');
   const [transcript, setTranscript] = useState('');
   const [response, setResponse] = useState('');
 
-  // Concentric ripple ring animations
+  // Questions dictionary dynamically based on language
+  const quickQuestions = [
+    { question: t('q1'), response: selectedLanguage.code === 'en' ? 'Use Neem Oil spray (5ml/L) or Mancozeb 75% WP for leaf blight.' : 'तुमच्या सोयाबीन पिकावरील करपा रोगासाठी मकोझेब ७५% WP (२ ग्रॅम/लिटर) फवारावे.' },
+    { question: t('q2'), response: selectedLanguage.code === 'en' ? 'PM-Kisan installment is scheduled to be credited this month.' : 'पीएम किसान सन्मान निधीचा पुढील हप्ता लवकरच खात्यात जमा होईल.' },
+    { question: t('q3'), response: selectedLanguage.code === 'en' ? 'Apply NPK 100:50:50 in 3 split doses for cotton.' : 'कापूस पिकासाठी नत्र:स्फुरद:पालाश १००:५०:५० मात्रा ३ टप्प्यात द्यावी.' },
+    { question: t('q4'), response: selectedLanguage.code === 'en' ? 'Today Latur APMC rate for Yellow Soybean is ₹4,650/Quintal.' : 'आजचे लातूर APMC मधील सोयाबीन बाजारभाव ₹४,६५०/क्विंटल आहेत.' },
+  ];
+
   const ripple1Val = useRef(new Animated.Value(0)).current;
   const ripple2Val = useRef(new Animated.Value(0)).current;
   const ripple3Val = useRef(new Animated.Value(0)).current;
-
-  // Mic scale animation
   const micScaleVal = useRef(new Animated.Value(1)).current;
-
   const scrollViewRef = useRef<ScrollView>(null);
 
-  // Pulse animation for mic button
   useEffect(() => {
     let breathing: Animated.CompositeAnimation;
     if (status === 'idle') {
@@ -107,7 +90,6 @@ export const VoiceAssistantScreen: React.FC<HomeScreenProps<'VoiceAssistant'>> =
     };
   }, [status]);
 
-  // Staggered concentric ripples when listening or pulsing
   useEffect(() => {
     let ripples: Animated.CompositeAnimation;
     const animateRing = (val: Animated.Value, delay: number) => {
@@ -157,7 +139,7 @@ export const VoiceAssistantScreen: React.FC<HomeScreenProps<'VoiceAssistant'>> =
       setTranscript('');
       setResponse('');
       setTimeout(() => {
-        const randomQ = QUICK_QUESTIONS[Math.floor(Math.random() * QUICK_QUESTIONS.length)];
+        const randomQ = quickQuestions[Math.floor(Math.random() * quickQuestions.length)];
         triggerMockQuery(randomQ.question, randomQ.response);
       }, 2000);
     }
@@ -182,11 +164,10 @@ export const VoiceAssistantScreen: React.FC<HomeScreenProps<'VoiceAssistant'>> =
 
   return (
     <View style={[styles.container, { backgroundColor: themeColors.background }]}>
-      {/* Top Header matching reference mockup */}
       <Header
         showBack
         onBackPress={() => navigation.goBack()}
-        title="Farmer AI Assistant"
+        title={t('agriMitraTab')}
         showLanguageSelector
       />
 
@@ -196,7 +177,6 @@ export const VoiceAssistantScreen: React.FC<HomeScreenProps<'VoiceAssistant'>> =
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Top Assistant Banner Card */}
         <View style={styles.bannerWrapper}>
           <LinearGradient
             colors={themeColors.bannerBg}
@@ -207,33 +187,27 @@ export const VoiceAssistantScreen: React.FC<HomeScreenProps<'VoiceAssistant'>> =
             <View style={styles.bannerTextWrap}>
               <View style={styles.assistantBadge}>
                 <Ionicons name="add-circle" size={14} color="#15803D" />
-                <Text style={styles.assistantBadgeText}>कृषी सहाय्यक</Text>
+                <Text style={styles.assistantBadgeText}>{t('agriMitraTab')}</Text>
               </View>
               <Text style={[styles.assistantTitle, { color: isDarkMode ? '#F9FAFB' : '#14532D' }]}>
-                तुमचा AI शेती सहाय्यक
+                {t('appName')}
               </Text>
               <Text style={[styles.assistantSubtitle, { color: isDarkMode ? '#D1D5DB' : '#475569' }]}>
-                शेतीविषयक प्रश्न आवाजाद्वारे विचारा.
+                {t('voiceTapToSpeak')}
               </Text>
             </View>
 
-            {/* Large Leaf Graphic */}
             <View style={styles.leafWrap}>
               <Ionicons name="leaf-outline" size={72} color={isDarkMode ? '#059669' : '#A7F3D0'} />
             </View>
           </LinearGradient>
         </View>
 
-        {/* Center Mic Call-to-Action Section */}
         <View style={styles.micSection}>
           <Text style={[styles.micMainInstruction, { color: themeColors.textPrimary }]}>
-            बोलण्यासाठी खालील माइकवर टॅप करा
-          </Text>
-          <Text style={[styles.micSubInstruction, { color: themeColors.textSecondary }]}>
-            मराठी, हिंदी आणि इंग्रजी मध्ये उपलब्ध
+            {status === 'listening' ? t('voiceListening') : t('voiceTapToSpeak')}
           </Text>
 
-          {/* Large Concentric Ring Mic Button */}
           <View style={styles.micContainer}>
             <Animated.View style={[styles.rippleRing, getRippleStyle(ripple1Val)]} />
             <Animated.View style={[styles.rippleRing, getRippleStyle(ripple2Val)]} />
@@ -257,14 +231,12 @@ export const VoiceAssistantScreen: React.FC<HomeScreenProps<'VoiceAssistant'>> =
             </Animated.View>
           </View>
 
-          {/* Mic Label Underneath (Updated to Krushi Mitra) */}
-          <Text style={[styles.micTapLabel, { color: themeColors.textPrimary }]}>बोलण्यासाठी टॅप करा</Text>
+          <Text style={[styles.micTapLabel, { color: themeColors.textPrimary }]}>{t('voiceTapToSpeak')}</Text>
           <TouchableOpacity onPress={handleMicPress}>
-            <Text style={styles.micSubLabel}>कृषी मित्राशी बोला</Text>
+            <Text style={styles.micSubLabel}>{t('agriMitraTab')}</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Conversational Transcript display if active */}
         {(transcript || response || status === 'processing') ? (
           <View style={styles.chatSection}>
             {transcript ? (
@@ -277,7 +249,7 @@ export const VoiceAssistantScreen: React.FC<HomeScreenProps<'VoiceAssistant'>> =
             {status === 'processing' && (
               <View style={[styles.aiCard, { backgroundColor: themeColors.card, borderColor: themeColors.border }]}>
                 <Ionicons name="leaf" size={18} color="#16A34A" />
-                <Text style={[styles.aiCardText, { color: themeColors.textPrimary }]}>माहिती मिळवत आहे...</Text>
+                <Text style={[styles.aiCardText, { color: themeColors.textPrimary }]}>{t('loading')}</Text>
               </View>
             )}
 
@@ -290,12 +262,11 @@ export const VoiceAssistantScreen: React.FC<HomeScreenProps<'VoiceAssistant'>> =
           </View>
         ) : null}
 
-        {/* Quick Questions Section ("झटपट विचारा") */}
         <View style={styles.quickQuestionsSection}>
-          <Text style={[styles.sectionTitle, { color: themeColors.textPrimary }]}>झटपट विचारा</Text>
+          <Text style={[styles.sectionTitle, { color: themeColors.textPrimary }]}>{t('suggestedQuestionsTitle')}</Text>
 
           <View style={styles.questionGrid}>
-            {QUICK_QUESTIONS.map((item, idx) => (
+            {quickQuestions.map((item, idx) => (
               <TouchableOpacity
                 key={idx}
                 style={[styles.questionCard, { backgroundColor: themeColors.card, borderColor: themeColors.border }]}
@@ -325,8 +296,6 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: 100,
   },
-
-  /* Top Assistant Banner Box */
   bannerWrapper: {
     paddingHorizontal: 16,
     paddingTop: 12,
@@ -377,8 +346,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
-  /* Center Voice Mic Section */
   micSection: {
     alignItems: 'center',
     marginTop: 24,
@@ -387,12 +354,6 @@ const styles = StyleSheet.create({
   micMainInstruction: {
     fontSize: 16,
     fontWeight: '800',
-    textAlign: 'center',
-  },
-  micSubInstruction: {
-    fontSize: 12,
-    fontWeight: '500',
-    marginTop: 4,
     textAlign: 'center',
   },
   micContainer: {
@@ -435,8 +396,6 @@ const styles = StyleSheet.create({
     color: '#D97706',
     marginTop: 2,
   },
-
-  /* Conversational Chat Cards */
   chatSection: {
     paddingHorizontal: 16,
     marginTop: 16,
@@ -469,8 +428,6 @@ const styles = StyleSheet.create({
     flex: 1,
     lineHeight: 18,
   },
-
-  /* Quick Questions Grid ("झटपट विचारा") */
   quickQuestionsSection: {
     marginTop: 24,
     paddingHorizontal: 16,

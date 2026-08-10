@@ -21,70 +21,76 @@ import { useSchemes } from '../../hooks/useSchemes';
 import { useNotifications } from '../../hooks/useNotifications';
 import { useLanguageContext } from '../../contexts/LanguageContext';
 import { useThemeContext } from '../../contexts/ThemeContext';
-import { HomeScreenProps } from '../../navigation/types';
-
-const SERVICE_ITEMS = [
-  {
-    title: 'पीक निवड',
-    subtitle: 'AI शिफारस',
-    icon: 'leaf' as const,
-    bg: '#F0F9F1',
-    circleBg: '#86EFAC',
-    iconColor: '#14532D',
-    arrowColor: '#15803D',
-  },
-  {
-    title: 'रोग निदान',
-    subtitle: 'पीक तपासणी',
-    icon: 'bug' as const,
-    bg: '#FDF2F2',
-    circleBg: '#FCA5A5',
-    iconColor: '#7F1D1D',
-    arrowColor: '#DC2626',
-  },
-  {
-    title: 'हवामान अंदाज',
-    subtitle: '7 दिवसांचा अंदाज',
-    icon: 'cloud' as const,
-    bg: '#F0F7FF',
-    circleBg: '#93C5FD',
-    iconColor: '#1E3A8A',
-    arrowColor: '#2563EB',
-  },
-  {
-    title: 'शासकीय योजना',
-    subtitle: 'पात्रता तपासा',
-    icon: 'person' as const,
-    bg: '#F5F3FF',
-    circleBg: '#C4B5FD',
-    iconColor: '#4C1D95',
-    arrowColor: '#7C3AED',
-  },
-  {
-    title: 'बाजार भाव',
-    subtitle: 'बाजार भाव आणि EMI',
-    icon: 'storefront' as const,
-    bg: '#FFF7ED',
-    circleBg: '#FDBA74',
-    iconColor: '#7C2D12',
-    arrowColor: '#EA580C',
-  },
-  {
-    title: 'खत सल्ला',
-    subtitle: 'NPK शिफारस',
-    icon: 'flask' as const,
-    bg: '#ECFDF5',
-    circleBg: '#6EE7B7',
-    iconColor: '#064E3B',
-    arrowColor: '#059669',
-  },
-];
+import { HomeScreenProps, HomeStackParamList } from '../../navigation/types';
 
 export const HomeScreen: React.FC<HomeScreenProps<'Home'>> = ({ navigation }) => {
-  const { selectedLanguage } = useLanguageContext();
+  const { t } = useLanguageContext();
   const { isDarkMode, colors: themeColors } = useThemeContext();
   const schemesQuery = useSchemes({ limit: 5 });
   const notificationsQuery = useNotifications();
+
+  const serviceItems = [
+    {
+      route: 'CropSelection' as const,
+      title: t('cropSelection'),
+      subtitle: t('cropSelectionSub'),
+      icon: 'leaf' as const,
+      bg: '#F0F9F1',
+      circleBg: '#86EFAC',
+      iconColor: '#14532D',
+      arrowColor: '#15803D',
+    },
+    {
+      route: 'DiseaseDiagnosis' as const,
+      title: t('diseaseDiagnosis'),
+      subtitle: t('diseaseDiagnosisSub'),
+      icon: 'bug' as const,
+      bg: '#FDF2F2',
+      circleBg: '#FCA5A5',
+      iconColor: '#7F1D1D',
+      arrowColor: '#DC2626',
+    },
+    {
+      route: 'Weather' as const,
+      title: t('weather'),
+      subtitle: t('weatherSub'),
+      icon: 'cloud' as const,
+      bg: '#F0F7FF',
+      circleBg: '#93C5FD',
+      iconColor: '#1E3A8A',
+      arrowColor: '#2563EB',
+    },
+    {
+      route: 'Schemes' as const,
+      title: t('schemesService'),
+      subtitle: t('schemesSub'),
+      icon: 'person' as const,
+      bg: '#F5F3FF',
+      circleBg: '#C4B5FD',
+      iconColor: '#4C1D95',
+      arrowColor: '#7C3AED',
+    },
+    {
+      route: 'MarketPrices' as const,
+      title: t('marketPrices'),
+      subtitle: t('marketPricesSub'),
+      icon: 'storefront' as const,
+      bg: '#FFF7ED',
+      circleBg: '#FDBA74',
+      iconColor: '#7C2D12',
+      arrowColor: '#EA580C',
+    },
+    {
+      route: 'FertilizerAdvice' as const,
+      title: t('fertilizerAdvice'),
+      subtitle: t('fertilizerAdviceSub'),
+      icon: 'flask' as const,
+      bg: '#ECFDF5',
+      circleBg: '#6EE7B7',
+      iconColor: '#064E3B',
+      arrowColor: '#059669',
+    },
+  ];
 
   const isRefreshing = schemesQuery.isRefetching;
 
@@ -135,13 +141,13 @@ export const HomeScreen: React.FC<HomeScreenProps<'Home'>> = ({ navigation }) =>
             >
               <View style={styles.bannerContent}>
                 <Text style={[styles.bannerGreeting, { color: isDarkMode ? '#6EE7B7' : '#15803D' }]}>
-                  नमस्कार शेतकरी मित्रा! 👋
+                  {t('greeting')}
                 </Text>
                 <Text style={[styles.bannerTitle, { color: isDarkMode ? '#F9FAFB' : '#14532D' }]}>
-                  आजची शेती माहिती
+                  {t('todayFarmingInfo')}
                 </Text>
                 <Text style={[styles.bannerSubtitle, { color: isDarkMode ? '#D1D5DB' : '#334155' }]}>
-                  AI च्या मदतीने अधिक उत्पादन, अधिक नफा.
+                  {t('aiSubtitle')}
                 </Text>
               </View>
             </LinearGradient>
@@ -151,14 +157,14 @@ export const HomeScreen: React.FC<HomeScreenProps<'Home'>> = ({ navigation }) =>
         {/* Quick Services Section ("झटपट सेवा") */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { color: themeColors.textPrimary }]}>झटपट सेवा</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('VoiceAssistant')}>
-              <Text style={[styles.seeAllText, { color: themeColors.textSecondary }]}>सर्व पहा {'>'}</Text>
+            <Text style={[styles.sectionTitle, { color: themeColors.textPrimary }]}>{t('quickServices')}</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Schemes')}>
+              <Text style={[styles.seeAllText, { color: themeColors.textSecondary }]}>{t('seeAll')}</Text>
             </TouchableOpacity>
           </View>
 
           <View style={styles.serviceGrid}>
-            {SERVICE_ITEMS.map((item, idx) => (
+            {serviceItems.map((item, idx) => (
               <TouchableOpacity
                 key={idx}
                 style={[
@@ -166,7 +172,7 @@ export const HomeScreen: React.FC<HomeScreenProps<'Home'>> = ({ navigation }) =>
                   { backgroundColor: isDarkMode ? themeColors.card : item.bg, borderColor: isDarkMode ? themeColors.border : 'rgba(0,0,0,0.04)' },
                 ]}
                 activeOpacity={0.8}
-                onPress={() => navigation.navigate('VoiceAssistant')}
+                onPress={() => navigation.navigate(item.route as any)}
               >
                 <View style={styles.cardHeaderRow}>
                   {/* Circular Logo Icon Container */}
@@ -190,9 +196,9 @@ export const HomeScreen: React.FC<HomeScreenProps<'Home'>> = ({ navigation }) =>
               <Ionicons name="sunny-outline" size={24} color="#D97706" />
             </View>
             <View style={styles.tipTextWrap}>
-              <Text style={[styles.tipTitle, { color: isDarkMode ? '#F59E0B' : '#92400E' }]}>आजचा शेती सल्ला</Text>
+              <Text style={[styles.tipTitle, { color: isDarkMode ? '#F59E0B' : '#92400E' }]}>{t('todayTip')}</Text>
               <Text style={[styles.tipSubtitle, { color: isDarkMode ? '#E5E7EB' : '#4B5563' }]}>
-                आज ठिबक सिंचन केल्यास पाण्याची 40-60% बचत होऊ शकते.
+                {t('tipText')}
               </Text>
             </View>
           </View>

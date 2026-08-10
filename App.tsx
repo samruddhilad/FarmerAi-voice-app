@@ -24,6 +24,45 @@ import { RootNavigator } from './src/navigation/RootNavigator';
 
 const isWeb = Platform.OS === 'web';
 
+const linking = {
+  prefixes: ['http://localhost:8081', 'farmerai://', '/'],
+  config: {
+    screens: {
+      Main: {
+        screens: {
+          HomeTab: {
+            screens: {
+              Home: '',
+              CropSelection: 'crop-selection',
+              DiseaseDiagnosis: 'disease-diagnosis',
+              Weather: 'weather',
+              Schemes: 'schemes',
+              MarketPrices: 'market-prices',
+              FertilizerAdvice: 'fertilizer-advice',
+              VoiceAssistant: 'mic',
+            },
+          },
+          SchemesTab: {
+            screens: {
+              SchemesList: 'schemes-list',
+            },
+          },
+          EligibilityTab: {
+            screens: {
+              EligibilityForm: 'eligibility-form',
+            },
+          },
+          ProfileTab: {
+            screens: {
+              Profile: 'profile',
+            },
+          },
+        },
+      },
+    },
+  },
+};
+
 export default function App() {
   return (
     <GestureHandlerRootView style={styles.root}>
@@ -34,7 +73,7 @@ export default function App() {
               <AuthProvider>
                 <LanguageProvider>
                   <ThemeProvider>
-                    <NavigationContainer>
+                    <NavigationContainer linking={linking as any}>
                       <StatusBar style="auto" />
                       <RootNavigator />
                     </NavigationContainer>

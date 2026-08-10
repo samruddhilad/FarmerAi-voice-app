@@ -5,11 +5,13 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Language } from '../types/api.types';
+import { getTranslation } from '../utils/i18n';
 
 interface LanguageContextType {
   selectedLanguage: Language;
   setLanguage: (language: Language) => Promise<void>;
   isLoading: boolean;
+  t: (key: string, params?: Record<string, any>) => string;
 }
 
 const DEFAULT_LANGUAGE: Language = { code: 'mr', name: 'मराठी' };
@@ -43,8 +45,15 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     await AsyncStorage.setItem(LANGUAGE_KEY, JSON.stringify(language));
   }, []);
 
+  const t = useCallback(
+    (key: string, params?: Record<string, any>) => {
+      return getTranslation(selectedLanguage.code, key, params);
+    },
+    [selectedLanguage.code]
+  );
+
   return (
-    <LanguageContext.Provider value={{ selectedLanguage, setLanguage, isLoading }}>
+    <LanguageContext.Provider value={{ selectedLanguage, setLanguage, isLoading, t }}>
       {children}
     </LanguageContext.Provider>
   );

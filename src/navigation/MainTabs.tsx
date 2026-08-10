@@ -11,10 +11,12 @@ import { EligibilityStack } from './EligibilityStack';
 import { ProfileStack } from './ProfileStack';
 import { Colors } from '../theme';
 import { useThemeContext } from '../contexts/ThemeContext';
+import { useLanguageContext } from '../contexts/LanguageContext';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 const FloatingCenterFab: React.FC<{ onPress: () => void; isFocused?: boolean }> = ({ onPress, isFocused }) => {
+  const { t } = useLanguageContext();
   const pulseAnim = React.useRef(new Animated.Value(0)).current;
 
   React.useEffect(() => {
@@ -64,7 +66,7 @@ const FloatingCenterFab: React.FC<{ onPress: () => void; isFocused?: boolean }> 
           <Ionicons name="mic" size={26} color={Colors.white} />
         </LinearGradient>
       </TouchableOpacity>
-      <Text style={[styles.centerLabel, isFocused && styles.centerLabelActive]}>कृषी मित्र</Text>
+      <Text style={[styles.centerLabel, isFocused && styles.centerLabelActive]}>{t('agriMitraTab')}</Text>
     </View>
   );
 };
@@ -122,17 +124,18 @@ type TabConfig = RegularTab | CenterTab;
 const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
   const insets = useSafeAreaInsets();
   const { isDarkMode, colors: themeColors } = useThemeContext();
+  const { t } = useLanguageContext();
 
   const currentRouteName = state.routes[state.index]?.name;
   const currentChildRoute = (state.routes[state.index]?.state as any)?.routes?.[(state.routes[state.index]?.state as any)?.index || 0]?.name;
   const isVoiceAssistantFocused = currentRouteName === 'HomeTab' && currentChildRoute === 'VoiceAssistant';
 
   const tabs: TabConfig[] = [
-    { routeName: 'HomeTab', label: 'मुखपृष्ठ', activeIcon: 'home', inactiveIcon: 'home-outline' },
-    { routeName: 'SchemesTab', label: 'योजना', activeIcon: 'apps', inactiveIcon: 'apps-outline' },
+    { routeName: 'HomeTab', label: t('homeTab'), activeIcon: 'home', inactiveIcon: 'home-outline' },
+    { routeName: 'SchemesTab', label: t('schemesTab'), activeIcon: 'apps', inactiveIcon: 'apps-outline' },
     { isCenter: true },
-    { routeName: 'EligibilityTab', label: 'पात्रता', activeIcon: 'checkmark-circle', inactiveIcon: 'checkmark-circle-outline' },
-    { routeName: 'ProfileTab', label: 'प्रोफाईल', activeIcon: 'person', inactiveIcon: 'person-outline' },
+    { routeName: 'EligibilityTab', label: t('eligibilityTab'), activeIcon: 'checkmark-circle', inactiveIcon: 'checkmark-circle-outline' },
+    { routeName: 'ProfileTab', label: t('profileTab'), activeIcon: 'person', inactiveIcon: 'person-outline' },
   ];
 
   return (
