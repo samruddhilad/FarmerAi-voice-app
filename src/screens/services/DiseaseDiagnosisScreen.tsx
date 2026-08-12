@@ -28,23 +28,23 @@ export const DiseaseDiagnosisScreen: React.FC<HomeScreenProps<'DiseaseDiagnosis'
   const commonDiseases = [
     {
       id: 'blight',
-      name: selectedLanguage.code === 'en' ? 'Leaf Blight' : 'करपा रोग (Leaf Blight)',
-      crop: selectedLanguage.code === 'en' ? 'Soybean, Cotton, Tomato' : 'सोयाबीन, कापूस, टमाटा',
+      name: t('leafBlight'),
+      crop: t('blightCrop'),
       severity: t('severityHigh'),
       severityColor: '#DC2626',
-      symptoms: selectedLanguage.code === 'en' ? 'Dark brown or black spots appearing on leaves.' : 'पानांवर तांबूस, काळे किंवा तपकिरी ठिपके पडणे.',
-      organicRemedy: selectedLanguage.code === 'en' ? 'Neem Oil (5ml/L) spray.' : 'कडुनिंब तेल (Neem Oil) 5ml प्रति लिटर फवारणी.',
-      chemicalRemedy: selectedLanguage.code === 'en' ? 'Mancozeb 75% WP (2g/L) spray.' : 'मॅन्कोझेब 75% WP (2 ग्रॅम/लिटर) फवारावे.',
+      symptoms: t('blightSymptoms'),
+      organicRemedy: t('blightOrganic'),
+      chemicalRemedy: t('blightChemical'),
     },
     {
       id: 'rust',
-      name: selectedLanguage.code === 'en' ? 'Rust Disease' : 'तांबेरा रोग (Rust Disease)',
-      crop: selectedLanguage.code === 'en' ? 'Wheat, Soybean' : 'गहू, सोयाबीन',
+      name: t('rustDisease'),
+      crop: t('rustCrop'),
       severity: t('severityMed'),
       severityColor: '#EA580C',
-      symptoms: selectedLanguage.code === 'en' ? 'Reddish pustules on lower leaf surface.' : 'पानांच्या खाली तांबड्या रंगाचे बारीक ठिपके दिसून येतात.',
-      organicRemedy: selectedLanguage.code === 'en' ? 'Buttermilk + Copper vessel solution spray.' : 'ताक + तांब्याची भांडी द्रावण फवारणी.',
-      chemicalRemedy: selectedLanguage.code === 'en' ? 'Hexaconazole 5% EC (2ml/L).' : 'हेक्झाकोनॅझोल 5% EC (2 ml/लिटर).',
+      symptoms: t('rustSymptoms'),
+      organicRemedy: t('rustOrganic'),
+      chemicalRemedy: t('rustChemical'),
     },
   ];
 
@@ -108,8 +108,8 @@ export const DiseaseDiagnosisScreen: React.FC<HomeScreenProps<'DiseaseDiagnosis'
               style={[
                 styles.diseaseCard,
                 {
-                  backgroundColor: isDarkMode ? '#1F2937' : '#FFFFFF',
-                  borderColor: isDarkMode ? '#374151' : '#E5E7EB',
+                  backgroundColor: isDarkMode ? '#1F2937' : '#F7FCF8',
+                  borderColor: isDarkMode ? '#374151' : '#C8E6C9',
                 },
               ]}
             >
@@ -181,16 +181,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scrollContent: {
-    padding: 16,
-    paddingBottom: 100,
+    padding: 12,
+    paddingBottom: 45,
   },
   scanCard: {
-    borderRadius: 20,
-    padding: 20,
+    borderRadius: 18,
+    padding: 14,
     alignItems: 'center',
     borderWidth: 1.5,
     borderStyle: 'dashed',
-    marginBottom: 20,
+    marginBottom: 10,
   },
   scanIconWrap: {
     width: 64,

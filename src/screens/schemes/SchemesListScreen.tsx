@@ -20,7 +20,8 @@ import { SkeletonSchemeCard } from '../../components/common/SkeletonLoader';
 import { EmptyState } from '../../components/common/EmptyState';
 import { useSchemes, useSchemeCategories } from '../../hooks/useSchemes';
 import { useLanguageContext } from '../../contexts/LanguageContext';
-import { getCategoryTranslation } from '../../utils/i18n';
+import { Header } from '../../components/layout/Header';
+import { getLocalizedScheme, getLocalizedCategoryName } from '../../utils/schemeLocalization';
 import { SchemesScreenProps } from '../../navigation/types';
 import { Scheme } from '../../types/api.types';
 
@@ -50,7 +51,18 @@ export const SchemesListScreen: React.FC<SchemesScreenProps<'SchemesList'>> = ({
   const categories = categoriesQuery.data || [];
   const totalSchemes = schemesQuery.data?.pages?.[0]?.data?.total || 0;
   const allCategories = [{ id: 'all', name: 'All', count: totalSchemes }, ...categories];
-  const schemes = schemesQuery.data?.pages?.flatMap((page) => page.data.items) || [];
+  const rawSchemes = schemesQuery.data?.pages?.flatMap((page) => page.data.items) || [];
+
+  // Filter & Localize schemes
+  const schemes = rawSchemes.map((s) => getLocalizedScheme(s, selectedLanguage.code)).filter((s) => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase().trim();
+    return (
+      s.title.toLowerCase().includes(q) ||
+      s.description.toLowerCase().includes(q) ||
+      (s.category && s.category.toLowerCase().includes(q))
+    );
+  });
 
   const handleSchemePress = (scheme: Scheme) => {
     navigation.navigate('SchemeDetails', { schemeId: scheme.id });
@@ -72,38 +84,12 @@ export const SchemesListScreen: React.FC<SchemesScreenProps<'SchemesList'>> = ({
 
   const renderHeader = () => (
     <View style={styles.headerBlock}>
-      {/* Top Header Row with Back Button */}
-      <View style={styles.topRow}>
-        <View style={styles.brandRow}>
-          <TouchableOpacity style={styles.backCircle} onPress={handleBack} activeOpacity={0.8}>
-            <Ionicons name="arrow-back" size={22} color={DARK_GREEN} />
-          </TouchableOpacity>
-
-          <View style={styles.brandIcon}>
-            <Text style={styles.brandIconText}>म</Text>
-          </View>
-          <View>
-            <Text style={styles.screenTitle}>{t('schemesPageTitle')}</Text>
-            <Text style={styles.screenSubtitle}>{t('schemesPageSubtitle')}</Text>
-          </View>
-        </View>
-
-        <View style={styles.actionsRow}>
-          <TouchableOpacity style={styles.circleAction} activeOpacity={0.8}>
-            <Ionicons name="globe-outline" size={20} color={DARK_GREEN} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.circleAction} activeOpacity={0.8}>
-            <Ionicons name="notifications-outline" size={20} color={DARK_GREEN} />
-          </TouchableOpacity>
-        </View>
-      </View>
-
       {/* Search Bar */}
       <View style={styles.searchWrap}>
         <SearchBar
           value={searchQuery}
           onChangeText={setSearchQuery}
-          placeholder={t('searchPlaceholder')}
+          placeholder={t('searchPlaceholder') || 'योजना किंवा विषय शोधा...'}
           iconColor={PRIMARY_GREEN}
           containerStyle={styles.searchContainerStyle}
         />
@@ -118,9 +104,7 @@ export const SchemesListScreen: React.FC<SchemesScreenProps<'SchemesList'>> = ({
         keyExtractor={(item) => item.id || item.name}
         renderItem={({ item }) => {
           const isActive = selectedCategory === item.name;
-          const translatedCatName = item.name === 'All'
-            ? t('allSchemes')
-            : getCategoryTranslation(item.name, selectedLanguage.code);
+          const translatedCatName = getLocalizedCategoryName(item.name, selectedLanguage.code);
 
           return (
             <TouchableOpacity
@@ -164,7 +148,12 @@ export const SchemesListScreen: React.FC<SchemesScreenProps<'SchemesList'>> = ({
   }
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top + Spacing.sm }]}>
+    <View style={styles.container}>
+      <Header
+        title={t('schemesPageTitle') || 'शासकीय योजना'}
+        subtitle={t('schemesPageSubtitle') || '२० निवडक कृषी योजना'}
+        showLanguageSelector
+      />
       <FlatList
         data={schemes}
         keyExtractor={(item) => item.id}

@@ -57,12 +57,12 @@ export const ProfileScreen: React.FC<ProfileScreenProps<'Profile'>> = ({ navigat
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         {/* User card */}
-        <View style={[styles.userCard, { backgroundColor: themeColors.card, borderColor: themeColors.border }, Shadows.card]}>
+        <View style={[styles.userCard, { backgroundColor: isDarkMode ? themeColors.card : '#F7FCF8', borderColor: isDarkMode ? themeColors.border : '#C8E6C9' }, Shadows.card]}>
           <View style={styles.avatar}>
-            <Ionicons name="person" size={32} color={Colors.primary[500]} />
+            <Ionicons name="person" size={28} color={Colors.primary[500]} />
           </View>
           <View style={styles.userInfo}>
-            <Text style={[styles.userName, { color: themeColors.textPrimary }]}>{user?.name || (selectedLanguage.code === 'en' ? 'Farmer Friend' : 'शेतकरी मित्र')}</Text>
+            <Text style={[styles.userName, { color: themeColors.textPrimary }]}>{user?.name || t('farmerFriend')}</Text>
             <Text style={[styles.userEmail, { color: themeColors.textSecondary }]}>{user?.email || user?.mobile || 'farmer@farmerai.org'}</Text>
           </View>
           <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
@@ -80,23 +80,23 @@ export const ProfileScreen: React.FC<ProfileScreenProps<'Profile'>> = ({ navigat
               activeOpacity={0.6}
             >
               <View style={styles.menuIconContainer}>
-                <Ionicons name={item.icon} size={20} color={Colors.primary[600]} />
+                <Ionicons name={item.icon} size={18} color={Colors.primary[600]} />
               </View>
               <Text style={[styles.menuLabel, { color: themeColors.textPrimary }]}>{item.label}</Text>
-              <Ionicons name="chevron-forward" size={18} color={themeColors.textSecondary} />
+              <Ionicons name="chevron-forward" size={16} color={themeColors.textSecondary} />
             </TouchableOpacity>
           ))}
         </View>
 
         {/* Logout */}
         <Button
-          title={selectedLanguage.code === 'en' ? 'Logout' : 'बाहेर पडा (Logout)'}
+          title={t('logout')}
           onPress={() => setShowLogoutDialog(true)}
           variant="danger"
           size="md"
           icon="log-out-outline"
           fullWidth
-          style={{ marginTop: Spacing['2xl'] }}
+          style={{ marginTop: 14 }}
         />
 
         <Text style={[styles.version, { color: themeColors.textSecondary }]}>Version 1.0.0</Text>
@@ -105,11 +105,11 @@ export const ProfileScreen: React.FC<ProfileScreenProps<'Profile'>> = ({ navigat
       <Dialog
         visible={showLogoutDialog}
         onClose={() => setShowLogoutDialog(false)}
-        title={selectedLanguage.code === 'en' ? 'Logout' : 'बाहेर पडा'}
-        message={selectedLanguage.code === 'en' ? 'Are you sure you want to logout?' : 'तुम्हाला खरोखर बाहेर पडायचे आहे का?'}
+        title={t('logout')}
+        message={t('logoutConfirm')}
         actions={[
           { label: t('cancel'), onPress: () => setShowLogoutDialog(false) },
-          { label: selectedLanguage.code === 'en' ? 'Logout' : 'बाहेर पडा', onPress: handleLogout, variant: 'destructive' },
+          { label: t('logout'), onPress: handleLogout, variant: 'destructive' },
         ]}
       />
     </View>
@@ -118,14 +118,14 @@ export const ProfileScreen: React.FC<ProfileScreenProps<'Profile'>> = ({ navigat
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  scrollContent: { padding: Spacing.xl, paddingBottom: 100 },
+  scrollContent: { padding: 14, paddingBottom: 45 },
   userCard: {
     flexDirection: 'row', alignItems: 'center',
-    borderRadius: BorderRadius.xl, padding: Spacing.xl, gap: Spacing.lg,
-    borderWidth: 1, marginBottom: Spacing['2xl'],
+    borderRadius: BorderRadius.lg, padding: 12, gap: 12,
+    borderWidth: 1, marginBottom: 12,
   },
   avatar: {
-    width: 56, height: 56, borderRadius: 28, backgroundColor: '#DCFCE7',
+    width: 46, height: 46, borderRadius: 23, backgroundColor: '#DCFCE7',
     justifyContent: 'center', alignItems: 'center',
   },
   userInfo: { flex: 1 },
@@ -133,16 +133,16 @@ const styles = StyleSheet.create({
   userEmail: { ...Typography.bodySm },
   menuContainer: { gap: Spacing.xxs },
   menuItem: {
-    flexDirection: 'row', alignItems: 'center', paddingVertical: Spacing.lg,
-    gap: Spacing.md, borderBottomWidth: 1,
+    flexDirection: 'row', alignItems: 'center', paddingVertical: 10,
+    gap: 10, borderBottomWidth: 1,
   },
   menuIconContainer: {
-    width: 36, height: 36, borderRadius: 10, backgroundColor: '#DCFCE7',
+    width: 32, height: 32, borderRadius: 8, backgroundColor: '#DCFCE7',
     justifyContent: 'center', alignItems: 'center',
   },
   menuLabel: { ...Typography.label, flex: 1 },
   version: {
     ...Typography.caption, textAlign: 'center',
-    marginTop: Spacing['3xl'],
+    marginTop: 14,
   },
 });

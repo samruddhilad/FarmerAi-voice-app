@@ -4,9 +4,42 @@
  */
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { configureApiClient } from '../api/client';
 import { User } from '../types/api.types';
+
+const isWeb = Platform.OS === 'web';
+
+const storage = {
+  getItem: async (key: string): Promise<string | null> => {
+    try {
+      if (isWeb) return await AsyncStorage.getItem(key);
+      return await SecureStore.getItemAsync(key);
+    } catch {
+      return null;
+    }
+  },
+  setItem: async (key: string, value: string): Promise<void> => {
+    try {
+      if (isWeb) {
+        await AsyncStorage.setItem(key, value);
+      } else {
+        await SecureStore.setItemAsync(key, value);
+      }
+    } catch {}
+  },
+  deleteItem: async (key: string): Promise<void> => {
+    try {
+      if (isWeb) {
+        await AsyncStorage.removeItem(key);
+      } else {
+        await SecureStore.deleteItemAsync(key);
+      }
+    } catch {}
+  },
+};
 
 interface AuthState {
   user: User | null;
@@ -35,11 +68,11 @@ const KEYS = {
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, setState] = useState<AuthState>({
-    user: { id: 'guest_user', name: 'Farmer', email: 'farmer@example.com', mobile: '9876543210', preferred_language: 'en' },
-    accessToken: 'guest_access_token',
-    refreshToken: 'guest_refresh_token',
-    isAuthenticated: true,
-    isLoading: false,
+    user: null,
+    accessToken: null,
+    refreshToken: null,
+    isAuthenticated: false,
+    isLoading: true,
     hasOnboarded: true,
   });
 
@@ -52,14 +85,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     configureApiClient({
       getAccessToken: async () => {
-        return await SecureStore.getItemAsync(KEYS.ACCESS_TOKEN);
+        return await storage.getItem(KEYS.ACCESS_TOKEN);
       },
       getRefreshToken: async () => {
-        return await SecureStore.getItemAsync(KEYS.REFRESH_TOKEN);
+        return await storage.getItem(KEYS.REFRESH_TOKEN);
       },
       onTokenRefreshed: async (accessToken: string, refreshToken: string) => {
-        await SecureStore.setItemAsync(KEYS.ACCESS_TOKEN, accessToken);
-        await SecureStore.setItemAsync(KEYS.REFRESH_TOKEN, refreshToken);
+        await storage.setItem(KEYS.ACCESS_TOKEN, accessToken);
+        await storage.setItem(KEYS.REFRESH_TOKEN, refreshToken);
         setState((prev) => ({ ...prev, accessToken, refreshToken }));
       },
       onSessionExpired: () => {
@@ -71,10 +104,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const restoreSession = async () => {
     try {
       const [accessToken, refreshToken, userJson, onboarded] = await Promise.all([
-        SecureStore.getItemAsync(KEYS.ACCESS_TOKEN),
-        SecureStore.getItemAsync(KEYS.REFRESH_TOKEN),
-        SecureStore.getItemAsync(KEYS.USER),
-        SecureStore.getItemAsync(KEYS.ONBOARDED),
+        storage.getItem(KEYS.ACCESS_TOKEN),
+        storage.getItem(KEYS.REFRESH_TOKEN),
+        storage.getItem(KEYS.USER),
+        storage.getItem(KEYS.ONBOARDED),
       ]);
 
       if (accessToken && userJson) {
@@ -102,9 +135,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = useCallback(
     async (user: User, accessToken: string, refreshToken: string) => {
       await Promise.all([
-        SecureStore.setItemAsync(KEYS.ACCESS_TOKEN, accessToken),
-        SecureStore.setItemAsync(KEYS.REFRESH_TOKEN, refreshToken),
-        SecureStore.setItemAsync(KEYS.USER, JSON.stringify(user)),
+        storage.setItem(KEYS.ACCESS_TOKEN, accessToken),
+        storage.setItem(KEYS.REFRESH_TOKEN, refreshToken),
+        storage.setItem(KEYS.USER, JSON.stringify(user)),
       ]);
 
       setState({
@@ -121,9 +154,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = useCallback(async () => {
     await Promise.all([
-      SecureStore.deleteItemAsync(KEYS.ACCESS_TOKEN),
-      SecureStore.deleteItemAsync(KEYS.REFRESH_TOKEN),
-      SecureStore.deleteItemAsync(KEYS.USER),
+      storage.deleteItem(KEYS.ACCESS_TOKEN),
+      storage.deleteItem(KEYS.REFRESH_TOKEN),
+      storage.deleteItem(KEYS.USER),
     ]);
 
     setState((prev) => ({
@@ -136,7 +169,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const completeOnboarding = useCallback(async () => {
-    await SecureStore.setItemAsync(KEYS.ONBOARDED, 'true');
+    await storage.setItem(KEYS.ONBOARDED, 'true');
     setState((prev) => ({ ...prev, hasOnboarded: true }));
   }, []);
 

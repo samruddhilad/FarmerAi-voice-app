@@ -8,7 +8,7 @@ import { RootStackParamList } from './types';
 import { useAuthContext } from '../contexts/AuthContext';
 import { AuthStack } from './AuthStack';
 import { MainTabs } from './MainTabs';
-import { LoadingScreen } from '../screens/support/SupportScreens';
+import { SplashScreen } from '../screens/auth/SplashScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -16,13 +16,13 @@ export const RootNavigator: React.FC = () => {
   const { isLoading } = useAuthContext();
 
   if (isLoading) {
-    return <LoadingScreen />;
+    return <SplashScreen />;
   }
 
   return (
-    <Stack.Navigator initialRouteName="Main" screenOptions={{ headerShown: false, animation: 'fade' }}>
-      <Stack.Screen name="Main" component={MainTabs} />
+    <Stack.Navigator initialRouteName="Auth" screenOptions={{ headerShown: false, animation: 'fade' }}>
       <Stack.Screen name="Auth" component={AuthStack} />
+      <Stack.Screen name="Main" component={MainTabs} />
     </Stack.Navigator>
   );
 };

@@ -152,7 +152,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps<'EligibilityForm
 
         {/* STEP 1: Personal Details */}
         {step === 1 && (
-          <View style={[styles.formCard, { backgroundColor: isDarkMode ? '#1F2937' : '#FFFFFF', borderColor: isDarkMode ? '#374151' : BORDER_GREEN }]}>
+          <View style={[styles.formCard, { backgroundColor: isDarkMode ? '#1F2937' : '#F7FCF8', borderColor: isDarkMode ? '#374151' : BORDER_GREEN }]}>
             <Text style={[styles.formCardTitle, { color: isDarkMode ? '#F9FAFB' : DARK_GREEN }]}>
               {t('step1Title')}
             </Text>
@@ -226,7 +226,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps<'EligibilityForm
 
         {/* STEP 2: Farm Details */}
         {step === 2 && (
-          <View style={[styles.formCard, { backgroundColor: isDarkMode ? '#1F2937' : '#FFFFFF', borderColor: isDarkMode ? '#374151' : BORDER_GREEN }]}>
+          <View style={[styles.formCard, { backgroundColor: isDarkMode ? '#1F2937' : '#F7FCF8', borderColor: isDarkMode ? '#374151' : BORDER_GREEN }]}>
             <Text style={[styles.formCardTitle, { color: isDarkMode ? '#F9FAFB' : DARK_GREEN }]}>
               {t('step2Title')}
             </Text>
@@ -339,7 +339,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps<'EligibilityForm
 
         {/* STEP 3: Location Details */}
         {step === 3 && (
-          <View style={[styles.formCard, { backgroundColor: isDarkMode ? '#1F2937' : '#FFFFFF', borderColor: isDarkMode ? '#374151' : BORDER_GREEN }]}>
+          <View style={[styles.formCard, { backgroundColor: isDarkMode ? '#1F2937' : '#F7FCF8', borderColor: isDarkMode ? '#374151' : BORDER_GREEN }]}>
             <Text style={[styles.formCardTitle, { color: isDarkMode ? '#F9FAFB' : DARK_GREEN }]}>
               {t('step3Title')}
             </Text>
@@ -453,73 +453,74 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingHorizontal: 16,
-    paddingTop: 12,
+    paddingHorizontal: 14,
+    paddingTop: 8,
+    paddingBottom: 45,
   },
 
   /* Page Header Title Block */
   pageTitleHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    marginBottom: 14,
+    gap: 10,
+    marginBottom: 10,
   },
   headerIconCircle: {
-    width: 46,
-    height: 46,
-    borderRadius: 23,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: DARK_GREEN,
     justifyContent: 'center',
     alignItems: 'center',
   },
   pageTitleText: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '800',
-    lineHeight: 26,
+    lineHeight: 24,
   },
   pageSubtitleText: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '500',
-    marginTop: 2,
+    marginTop: 1,
   },
 
   /* Intro Banner Card */
   introCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    borderRadius: 18,
-    padding: 16,
+    gap: 10,
+    borderRadius: 16,
+    padding: 12,
     borderWidth: 1,
-    marginBottom: 16,
+    marginBottom: 12,
   },
   introIconBox: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
     backgroundColor: '#FFF',
     justifyContent: 'center',
     alignItems: 'center',
   },
   introText: {
     flex: 1,
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '700',
-    lineHeight: 18,
+    lineHeight: 16,
   },
 
   /* Step Progress Tracker */
   stepProgressContainer: {
-    marginBottom: 16,
+    marginBottom: 12,
   },
   stepHeaderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   stepHeaderTitle: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '800',
     color: DARK_GREEN,
   },
@@ -536,7 +537,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   stepSegment: {
-    height: 6,
+    height: 5,
     borderRadius: 3,
     backgroundColor: '#E5E7EB',
   },
@@ -549,23 +550,23 @@ const styles = StyleSheet.create({
 
   /* Form Cards */
   formCard: {
-    borderRadius: 20,
-    padding: 18,
+    borderRadius: 18,
+    padding: 14,
     borderWidth: 1.5,
-    marginBottom: 20,
+    marginBottom: 12,
   },
   formCardTitle: {
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: '800',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   fieldGroup: {
-    marginBottom: 16,
+    marginBottom: 12,
   },
   fieldLabel: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '700',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   textInput: {
     height: 48,

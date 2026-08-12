@@ -91,6 +91,12 @@ export interface Scheme {
   application_url?: string;
   deadline?: string;
   is_featured?: boolean;
+  department?: string;
+  about?: string;
+  target_group?: string;
+  beneficiary_category?: string;
+  gr_url?: string;
+  document_url?: string;
   created_at?: string;
   updated_at?: string;
 }

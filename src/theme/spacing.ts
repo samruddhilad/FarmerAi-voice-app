@@ -29,11 +29,11 @@ export const BorderRadius = {
 } as const;
 
 export const Layout = {
-  screenPaddingH: Spacing.lg,
-  screenPaddingV: Spacing.lg,
-  cardPadding: Spacing.lg,
-  sectionGap: Spacing['2xl'],
-  itemGap: Spacing.md,
+  screenPaddingH: 20,
+  screenPaddingV: 16,
+  cardPadding: 18,
+  sectionGap: 26,
+  itemGap: 12,
   iconSize: {
     sm: 16,
     md: 20,
@@ -43,7 +43,7 @@ export const Layout = {
     '3xl': 40,
     '4xl': 48,
   },
-  touchTarget: 48,
-  bottomTabHeight: 64,
+  touchTarget: 44,
+  bottomTabHeight: 60,
   headerHeight: 56,
 } as const;

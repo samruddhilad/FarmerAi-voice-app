@@ -56,7 +56,7 @@ export const WeatherScreen: React.FC<HomeScreenProps<'Weather'>> = ({ navigation
           <View style={styles.locationRow}>
             <View style={styles.locationTag}>
               <Ionicons name="location" size={16} color="#FFF" />
-              <Text style={styles.locationText}>{selectedLanguage.code === 'en' ? 'Pune / Nashik, Maharashtra' : 'पुणे / नाशिक, महाराष्ट्र'}</Text>
+              <Text style={styles.locationText}>{t('puneNashikLocation')}</Text>
             </View>
             <Text style={styles.updatedText}>{t('weatherUpdatedToday')}</Text>
           </View>
@@ -108,8 +108,8 @@ export const WeatherScreen: React.FC<HomeScreenProps<'Weather'>> = ({ navigation
               style={[
                 styles.forecastRow,
                 {
-                  backgroundColor: isDarkMode ? '#1F2937' : '#FFFFFF',
-                  borderColor: isDarkMode ? '#374151' : '#E5E7EB',
+                  backgroundColor: isDarkMode ? '#1F2937' : '#F7FCF8',
+                  borderColor: isDarkMode ? '#374151' : '#C8E6C9',
                 },
               ]}
             >
@@ -162,19 +162,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scrollContent: {
-    padding: 16,
-    paddingBottom: 100,
+    padding: 12,
+    paddingBottom: 45,
   },
   heroCard: {
-    borderRadius: 22,
-    padding: 20,
-    marginBottom: 16,
+    borderRadius: 18,
+    padding: 16,
+    marginBottom: 10,
   },
   locationRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   locationTag: {
     flexDirection: 'row',
@@ -195,16 +195,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 14,
   },
   mainTempText: {
     color: '#FFF',
-    fontSize: 44,
+    fontSize: 38,
     fontWeight: '900',
   },
   conditionText: {
     color: '#E0F2FE',
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
     marginTop: 2,
   },
@@ -212,8 +212,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    borderRadius: 16,
-    padding: 12,
+    borderRadius: 14,
+    padding: 10,
   },
   metricBox: {
     alignItems: 'center',
@@ -231,36 +231,36 @@ const styles = StyleSheet.create({
   },
   adviceCard: {
     flexDirection: 'row',
-    gap: 12,
-    padding: 14,
-    borderRadius: 16,
+    gap: 10,
+    padding: 12,
+    borderRadius: 14,
     borderWidth: 1,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   adviceTitle: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '800',
   },
   adviceSub: {
-    fontSize: 12,
+    fontSize: 11,
     marginTop: 2,
-    lineHeight: 17,
+    lineHeight: 16,
   },
   section: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '800',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   forecastRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 14,
-    borderRadius: 16,
-    marginBottom: 10,
+    padding: 12,
+    borderRadius: 14,
+    marginBottom: 6,
     borderWidth: 1,
   },
   dayCol: {

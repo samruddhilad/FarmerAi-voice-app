@@ -25,42 +25,42 @@ export const MarketPricesScreen: React.FC<HomeScreenProps<'MarketPrices'>> = ({ 
   const [selectedMandi, setSelectedMandi] = useState('latur');
 
   const mandis = [
-    { id: 'latur', name: selectedLanguage.code === 'en' ? 'Latur APMC' : 'लातूर APMC' },
-    { id: 'akola', name: selectedLanguage.code === 'en' ? 'Akola APMC' : 'अकोला APMC' },
-    { id: 'solapur', name: selectedLanguage.code === 'en' ? 'Solapur APMC' : 'सोलापूर APMC' },
-    { id: 'nashik', name: selectedLanguage.code === 'en' ? 'Nashik APMC' : 'नाशिक APMC' },
+    { id: 'latur', name: t('laturMandi') },
+    { id: 'akola', name: t('akolaMandi') },
+    { id: 'solapur', name: t('solapurMandi') },
+    { id: 'nashik', name: t('nashikMandi') },
   ];
 
   const commodities = [
     {
       id: 'cotton',
-      name: selectedLanguage.code === 'en' ? 'Cotton (Medium Staple)' : 'कापूस (Medium Staple)',
+      name: t('cottonMediumStaple'),
       price: '₹7,850',
       unit: t('perQuintal'),
       trend: '+₹150',
       isUp: true,
       minMax: '₹7,400 - ₹8,100',
-      quality: selectedLanguage.code === 'en' ? 'Medium-Good' : 'मध्यम ते उत्तम',
+      quality: t('mediumGoodQuality'),
     },
     {
       id: 'soybean',
-      name: selectedLanguage.code === 'en' ? 'Soybean (Yellow)' : 'सोयाबीन (Yellow Soybean)',
+      name: t('soybeanYellow'),
       price: '₹4,650',
       unit: t('perQuintal'),
       trend: '+₹80',
       isUp: true,
       minMax: '₹4,300 - ₹4,800',
-      quality: selectedLanguage.code === 'en' ? 'Yellow Grade A' : 'पिवळा ग्रेड A',
+      quality: t('yellowGradeA'),
     },
     {
       id: 'onion',
-      name: selectedLanguage.code === 'en' ? 'Onion (Red)' : 'कांदा (Red Onion)',
+      name: t('onionRed'),
       price: '₹2,200',
       unit: t('perQuintal'),
       trend: '-₹50',
       isUp: false,
       minMax: '₹1,800 - ₹2,500',
-      quality: selectedLanguage.code === 'en' ? 'Red Medium' : 'लाल मध्यम',
+      quality: t('redMedium'),
     },
   ];
 
@@ -126,8 +126,8 @@ export const MarketPricesScreen: React.FC<HomeScreenProps<'MarketPrices'>> = ({ 
               style={[
                 styles.priceCard,
                 {
-                  backgroundColor: isDarkMode ? '#1F2937' : '#FFFFFF',
-                  borderColor: isDarkMode ? '#374151' : '#E5E7EB',
+                  backgroundColor: isDarkMode ? '#1F2937' : '#F7FCF8',
+                  borderColor: isDarkMode ? '#374151' : '#C8E6C9',
                 },
               ]}
             >
@@ -219,11 +219,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scrollContent: {
-    padding: 16,
-    paddingBottom: 100,
+    padding: 12,
+    paddingBottom: 45,
   },
   section: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   sectionTitle: {
     fontSize: 16,

@@ -17,15 +17,6 @@ const LANGUAGES: Language[] = [
   { code: 'mr', name: 'मराठी' },
   { code: 'en', name: 'English' },
   { code: 'hi', name: 'हिंदी' },
-  { code: 'ta', name: 'தமிழ்' },
-  { code: 'te', name: 'తెలుగు' },
-  { code: 'kn', name: 'ಕನ್ನಡ' },
-  { code: 'gu', name: 'ગુજરાતી' },
-  { code: 'pa', name: 'ਪੰਜਾਬੀ' },
-  { code: 'bn', name: 'বাংলা' },
-  { code: 'or', name: 'ଓଡ଼ିଆ' },
-  { code: 'ml', name: 'മലയാളം' },
-  { code: 'as', name: 'असमीया' },
   { code: 'ahr', name: 'अहिराणी' },
   { code: 'kok', name: 'कोंकणी' },
 ];
@@ -75,14 +66,18 @@ export const Header: React.FC<HeaderProps> = ({
           </TouchableOpacity>
         ) : (
           <View style={styles.logoContainer}>
-            <Ionicons name="leaf" size={22} color={Colors.white} />
+            <Ionicons name="leaf" size={20} color={Colors.white} />
           </View>
         )}
 
         <View style={styles.titleContainer}>
-          <Text style={[styles.title, { color: themeColors.textPrimary }]}>{title || 'Farmer AI'}</Text>
-          {showBack ? null : (
-            <Text style={[styles.subtitle, { color: themeColors.textSecondary }]}>{subtitle || 'SMART FARMING'}</Text>
+          <Text style={[styles.title, { color: isDarkMode ? '#F9FAFB' : '#172033' }]}>
+            {title || 'Farmer AI'}
+          </Text>
+          {!showBack && (
+            <Text style={[styles.subtitle, { color: isDarkMode ? '#9CA3AF' : '#8C9BAB' }]}>
+              {subtitle || 'VOICE ASSISTANT'}
+            </Text>
           )}
         </View>
       </View>
@@ -228,13 +223,13 @@ const styles = StyleSheet.create({
     marginRight: 2,
   },
   logoContainer: {
-    width: 38,
-    height: 38,
+    width: 36,
+    height: 36,
     borderRadius: 12,
-    backgroundColor: '#1E8E3E',
+    backgroundColor: '#187A3D',
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 3,
+    elevation: 2,
   },
   titleContainer: {
     justifyContent: 'center',

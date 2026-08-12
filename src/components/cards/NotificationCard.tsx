@@ -73,17 +73,17 @@ export const NotificationCard: React.FC<NotificationCardProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.white,
+    backgroundColor: '#F7FCF8',
     borderRadius: 16,
     borderLeftWidth: 4,
     borderLeftColor: Colors.primary[600],
     borderTopWidth: 1,
     borderRightWidth: 1,
     borderBottomWidth: 1,
-    borderTopColor: Colors.gray[200],
-    borderRightColor: Colors.gray[200],
-    borderBottomColor: Colors.gray[200],
-    marginBottom: Spacing.md,
+    borderTopColor: '#C8E6C9',
+    borderRightColor: '#C8E6C9',
+    borderBottomColor: '#C8E6C9',
+    marginBottom: 8,
     shadowColor: Colors.black,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.02,
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   content: {
-    padding: Spacing.lg,
+    padding: 12,
   },
   badgeRow: {
     marginBottom: Spacing.xs,

@@ -28,10 +28,10 @@ export const VoiceAssistantScreen: React.FC<HomeScreenProps<'VoiceAssistant'>> =
 
   // Questions dictionary dynamically based on language
   const quickQuestions = [
-    { question: t('q1'), response: selectedLanguage.code === 'en' ? 'Use Neem Oil spray (5ml/L) or Mancozeb 75% WP for leaf blight.' : 'तुमच्या सोयाबीन पिकावरील करपा रोगासाठी मकोझेब ७५% WP (२ ग्रॅम/लिटर) फवारावे.' },
-    { question: t('q2'), response: selectedLanguage.code === 'en' ? 'PM-Kisan installment is scheduled to be credited this month.' : 'पीएम किसान सन्मान निधीचा पुढील हप्ता लवकरच खात्यात जमा होईल.' },
-    { question: t('q3'), response: selectedLanguage.code === 'en' ? 'Apply NPK 100:50:50 in 3 split doses for cotton.' : 'कापूस पिकासाठी नत्र:स्फुरद:पालाश १००:५०:५० मात्रा ३ टप्प्यात द्यावी.' },
-    { question: t('q4'), response: selectedLanguage.code === 'en' ? 'Today Latur APMC rate for Yellow Soybean is ₹4,650/Quintal.' : 'आजचे लातूर APMC मधील सोयाबीन बाजारभाव ₹४,६५०/क्विंटल आहेत.' },
+    { question: t('q1'), response: t('ansQ1') },
+    { question: t('q2'), response: t('ansQ2') },
+    { question: t('q3'), response: t('ansQ3') },
+    { question: t('q4'), response: t('ansQ4') },
   ];
 
   const ripple1Val = useRef(new Animated.Value(0)).current;
@@ -294,15 +294,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 100,
+    paddingBottom: 45,
   },
   bannerWrapper: {
-    paddingHorizontal: 16,
-    paddingTop: 12,
+    paddingHorizontal: 14,
+    paddingTop: 8,
   },
   assistantBannerCard: {
-    borderRadius: 20,
-    padding: 18,
+    borderRadius: 18,
+    padding: 14,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -323,46 +323,46 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 10,
     borderRadius: 14,
-    marginBottom: 8,
+    marginBottom: 6,
   },
   assistantBadgeText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '700',
     color: '#15803D',
   },
   assistantTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '800',
-    lineHeight: 26,
+    lineHeight: 24,
   },
   assistantSubtitle: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '500',
-    marginTop: 4,
+    marginTop: 2,
   },
   leafWrap: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     justifyContent: 'center',
     alignItems: 'center',
   },
   micSection: {
     alignItems: 'center',
-    marginTop: 24,
-    paddingHorizontal: 16,
+    marginTop: 14,
+    paddingHorizontal: 14,
   },
   micMainInstruction: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '800',
     textAlign: 'center',
   },
   micContainer: {
-    width: 170,
-    height: 170,
+    width: 140,
+    height: 140,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
-    marginVertical: 12,
+    marginVertical: 6,
   },
   rippleRing: {
     position: 'absolute',

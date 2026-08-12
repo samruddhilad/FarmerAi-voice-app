@@ -52,15 +52,15 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, []);
 
   const colors = {
-    background: isDarkMode ? '#111827' : '#FFFFFF',
-    surface: isDarkMode ? '#1F2937' : '#FAFAFA',
-    card: isDarkMode ? '#1F2937' : '#FFFFFF',
+    background: isDarkMode ? '#111827' : '#F0F9F1',
+    surface: isDarkMode ? '#1F2937' : '#E8F5E9',
+    card: isDarkMode ? '#1F2937' : '#F7FCF8',
     textPrimary: isDarkMode ? '#F9FAFB' : '#111827',
-    textSecondary: isDarkMode ? '#9CA3AF' : '#6B7280',
-    border: isDarkMode ? '#374151' : '#E5E7EB',
-    headerBg: isDarkMode ? '#111827' : '#FFFFFF',
-    bannerBg: (isDarkMode ? ['#064E3B', '#022C22'] : ['#E8F5E9', '#F3F9F4']) as [string, string],
-    navBg: isDarkMode ? '#1F2937' : '#FFFFFF',
+    textSecondary: isDarkMode ? '#9CA3AF' : '#4B5563',
+    border: isDarkMode ? '#374151' : '#D1E7D4',
+    headerBg: isDarkMode ? '#111827' : '#EAF5ED',
+    bannerBg: (isDarkMode ? ['#064E3B', '#022C22'] : ['#DCF0E2', '#E8F5E9']) as [string, string],
+    navBg: isDarkMode ? '#1F2937' : '#EAF5ED',
   };
 
   return (

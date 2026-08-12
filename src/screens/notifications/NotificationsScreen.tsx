@@ -32,7 +32,7 @@ export const NotificationsScreen: React.FC<HomeScreenProps<'Notifications'>> = (
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{t('notificationsTitle')}</Text>
         <TouchableOpacity onPress={() => markRead.mutate()}>
-          <Text style={styles.markRead}>{selectedLanguage.code === 'en' ? 'Mark all read' : 'सर्व वाचेली करा'}</Text>
+          <Text style={styles.markRead}>{t('markAllRead')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -50,7 +50,7 @@ export const NotificationsScreen: React.FC<HomeScreenProps<'Notifications'>> = (
         )}
         ListEmptyComponent={
           <EmptyState icon="notifications-off-outline" title={t('noNotifications')}
-            message={selectedLanguage.code === 'en' ? "You'll see updates about schemes and announcements here." : "इथे तुम्हाला नवनवीन शासकीय योजना व अपडेट्स दिसतील."} />
+            message={t('notificationsEmptySub')} />
         }
       />
     </View>
@@ -58,12 +58,12 @@ export const NotificationsScreen: React.FC<HomeScreenProps<'Notifications'>> = (
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.white },
+  container: { flex: 1, backgroundColor: Colors.background },
   header: {
-    flexDirection: 'row', alignItems: 'center', paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.md, gap: Spacing.md,
+    flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14,
+    paddingVertical: 10, gap: 10,
   },
   headerTitle: { ...Typography.h5, color: Colors.text.primary, flex: 1 },
   markRead: { ...Typography.labelSm, color: Colors.primary[600] },
-  list: { padding: Spacing.lg, paddingBottom: 100 },
+  list: { padding: 14, paddingBottom: 45 },
 });

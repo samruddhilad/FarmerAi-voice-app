@@ -26,23 +26,23 @@ export const FertilizerAdviceScreen: React.FC<HomeScreenProps<'FertilizerAdvice'
   const [selectedCrop, setSelectedCrop] = useState('cotton');
 
   const crops = [
-    { id: 'cotton', name: t('cotton'), npk: '100 : 50 : 50', dose: selectedLanguage.code === 'en' ? '3 Split Doses' : '३ टप्प्यात' },
-    { id: 'soybean', name: t('soybean'), npk: '20 : 60 : 40', dose: selectedLanguage.code === 'en' ? 'At Sowing' : 'पेरणीसमयी' },
-    { id: 'sugarcane', name: t('sugarcane'), npk: '250 : 115 : 115', dose: selectedLanguage.code === 'en' ? '4 Split Doses' : '४ टप्प्यात' },
-    { id: 'wheat', name: t('wheat'), npk: '120 : 60 : 40', dose: selectedLanguage.code === 'en' ? '2 Split Doses' : '२ टप्प्यात' },
+    { id: 'cotton', name: t('cotton'), npk: '100 : 50 : 50', dose: t('doses3Split') },
+    { id: 'soybean', name: t('soybean'), npk: '20 : 60 : 40', dose: t('atSowing') },
+    { id: 'sugarcane', name: t('sugarcane'), npk: '250 : 115 : 115', dose: t('doses4Split') },
+    { id: 'wheat', name: t('wheat'), npk: '120 : 60 : 40', dose: t('doses2Split') },
   ];
 
   const fertilizerSchedule = [
     {
-      stage: selectedLanguage.code === 'en' ? '1. At Sowing (Basal Dose)' : '१. पेरणीसमयी (Basal Dose)',
-      fertilizers: selectedLanguage.code === 'en' ? 'D.A.P (10:26:26) - 50 kg + M.O.P - 25 kg per acre' : 'D.A.P (10:26:26) - 50 kg + M.O.P - 25 kg प्रति एकड',
-      purpose: selectedLanguage.code === 'en' ? 'For strong root development and early nutrition.' : 'मुळांच्या मजबूत वाढीसाठी व सुरुवातीच्या पोषणासाठी.',
+      stage: t('stage1Sowing'),
+      fertilizers: t('fertDapMop'),
+      purpose: t('purposeRoots'),
       color: '#059669',
     },
     {
-      stage: selectedLanguage.code === 'en' ? '2. After 30 Days (Vegetative Stage)' : '२. ३० दिवसांनंतर (Vegetative Stage)',
-      fertilizers: selectedLanguage.code === 'en' ? 'Urea - 45 kg + Zinc Sulphate - 5 kg per acre' : 'युरिया (Urea) - 45 kg + झिंक सल्फेट - 5 kg प्रति एकड',
-      purpose: selectedLanguage.code === 'en' ? 'For vigorous vegetative growth and leaf greenness.' : 'पानांचा हिरवेपणा व जोमदार वाढीसाठी.',
+      stage: t('stage2Vegetative'),
+      fertilizers: t('fertUreaZinc'),
+      purpose: t('purposeLeaves'),
       color: '#0284C7',
     },
   ];
@@ -134,8 +134,8 @@ export const FertilizerAdviceScreen: React.FC<HomeScreenProps<'FertilizerAdvice'
               style={[
                 styles.scheduleCard,
                 {
-                  backgroundColor: isDarkMode ? '#1F2937' : '#FFFFFF',
-                  borderColor: isDarkMode ? '#374151' : '#E5E7EB',
+                  backgroundColor: isDarkMode ? '#1F2937' : '#F7FCF8',
+                  borderColor: isDarkMode ? '#374151' : '#C8E6C9',
                 },
               ]}
             >
@@ -194,11 +194,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scrollContent: {
-    padding: 16,
-    paddingBottom: 100,
+    padding: 12,
+    paddingBottom: 45,
   },
   section: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   sectionTitle: {
     fontSize: 16,

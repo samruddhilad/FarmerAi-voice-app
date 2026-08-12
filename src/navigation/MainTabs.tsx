@@ -58,7 +58,7 @@ const FloatingCenterFab: React.FC<{ onPress: () => void; isFocused?: boolean }> 
           ]}
         />
         <LinearGradient
-          colors={['#4ADE80', '#16A34A']}
+          colors={['#22C55E', '#187A3D']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.centerFab}
@@ -90,7 +90,9 @@ const TabItem: React.FC<{
     }).start();
   }, [isFocused]);
 
-  const color = isFocused ? '#16A34A' : '#6B7280';
+  const activeColor = '#187A3D';
+  const inactiveColor = '#5F6B7A';
+  const color = isFocused ? activeColor : inactiveColor;
   const iconName = isFocused ? activeIcon : inactiveIcon;
 
   return (
@@ -99,9 +101,15 @@ const TabItem: React.FC<{
       onPress={onPress}
       activeOpacity={0.7}
     >
-      <Animated.View style={{ transform: [{ scale: scaleValue }], alignItems: 'center' }}>
-        <Ionicons name={iconName} size={22} color={color} />
-        <Text style={[styles.tabLabel, { color: isFocused ? '#16A34A' : textColor }]}>{label}</Text>
+      <Animated.View
+        style={[
+          styles.tabItemInner,
+          isFocused && styles.tabItemActivePill,
+          { transform: [{ scale: scaleValue }] },
+        ]}
+      >
+        <Ionicons name={iconName} size={21} color={color} />
+        <Text style={[styles.tabLabel, { color }]}>{label}</Text>
       </Animated.View>
     </TouchableOpacity>
   );
@@ -144,8 +152,8 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
         styles.tabBarFloatingContainer,
         {
           backgroundColor: isDarkMode ? '#1F2937' : '#FFFFFF',
-          borderColor: isDarkMode ? '#374151' : 'rgba(229, 231, 235, 0.8)',
-          bottom: Math.max(insets.bottom, 10),
+          borderColor: isDarkMode ? '#374151' : '#DDE5E0',
+          bottom: Math.max(insets.bottom, 6),
         },
       ]}
     >
@@ -221,25 +229,35 @@ const styles = StyleSheet.create({
   tabBarFloatingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 36, // Capsule floating shape matching reference Image 2
+    borderRadius: 36,
     paddingTop: 4,
     paddingBottom: 6,
     paddingHorizontal: 8,
     position: 'absolute',
     left: 14,
     right: 14,
-    borderWidth: 1.5,
-    shadowColor: Colors.black,
+    borderWidth: 1,
+    shadowColor: '#187A3D',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.08,
     shadowRadius: 12,
-    elevation: 10,
+    elevation: 8,
   },
   tabItem: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingVertical: 2,
+  },
+  tabItemInner: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
     paddingVertical: 4,
+    borderRadius: 16,
+  },
+  tabItemActivePill: {
+    backgroundColor: '#EAF6EE',
   },
   tabLabel: {
     fontSize: 11,
@@ -266,9 +284,9 @@ const styles = StyleSheet.create({
     borderRadius: 26,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#16A34A',
+    shadowColor: '#187A3D',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
+    shadowOpacity: 0.3,
     shadowRadius: 6,
     elevation: 6,
   },
@@ -277,16 +295,16 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: '#86EFAC',
+    backgroundColor: '#EAF6EE',
   },
   centerLabel: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#6B7280',
+    color: '#5F6B7A',
     marginTop: 2,
   },
   centerLabelActive: {
-    color: '#16A34A',
+    color: '#187A3D',
     fontWeight: '800',
   },
 });

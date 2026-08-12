@@ -16,27 +16,21 @@ import { Language } from '../../types/api.types';
 const DEFAULT_LANGUAGES: Language[] = [
   { code: 'mr', name: 'मराठी' },
   { code: 'en', name: 'English' },
-  { code: 'hi', name: 'हिन्दी' },
-  { code: 'ta', name: 'தமிழ்' },
-  { code: 'te', name: 'తెలుగు' },
-  { code: 'kn', name: 'ಕನ್ನಡ' },
-  { code: 'gu', name: 'ગુજરાતી' },
-  { code: 'pa', name: 'ਪੰਜਾਬੀ' },
-  { code: 'bn', name: 'বাংলা' },
-  { code: 'or', name: 'ଓଡ଼ିଆ' },
-  { code: 'ml', name: 'മലയാളം' },
-  { code: 'as', name: 'असमिया' },
+  { code: 'hi', name: 'हिंदी' },
   { code: 'ahr', name: 'अहिराणी' },
   { code: 'kok', name: 'कोंकणी' },
 ];
 
 export const LanguageSelectionScreen: React.FC<ProfileScreenProps<'LanguageSelection'>> = ({ navigation }) => {
   const insets = useSafeAreaInsets();
-  const { selectedLanguage, setLanguage } = useLanguageContext();
+  const { selectedLanguage, setLanguage, t } = useLanguageContext();
   const languagesQuery = useLanguages();
   const updateProfile = useUpdateProfile();
 
-  const languages = (languagesQuery.data as Language[]) || DEFAULT_LANGUAGES;
+  const fetchedLangs = languagesQuery.data as Language[] | undefined;
+  const languages = fetchedLangs && fetchedLangs.length > 0
+    ? DEFAULT_LANGUAGES.map((dl) => fetchedLangs.find((fl) => fl.code === dl.code) || dl)
+    : DEFAULT_LANGUAGES;
 
   const handleSelect = async (lang: Language) => {
     await setLanguage(lang);
@@ -50,11 +44,11 @@ export const LanguageSelectionScreen: React.FC<ProfileScreenProps<'LanguageSelec
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color={Colors.text.primary} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Select Language</Text>
+        <Text style={styles.headerTitle}>{t('selectLanguageTitle')}</Text>
       </View>
 
       <Text style={styles.subtitle}>
-        Choose your preferred language for the AI assistant
+        {t('selectLanguageSub')}
       </Text>
 
       <FlatList

@@ -6,13 +6,15 @@ import { Colors, Spacing, Shadows } from '../../theme';
 
 interface QuickActionCardProps {
   title: string;
+  subtitle?: string;
   icon?: keyof typeof Ionicons.glyphMap;
   onPress: () => void;
 }
 
 export const QuickActionCard: React.FC<QuickActionCardProps> = ({
   title,
-  icon = 'mic-outline',
+  subtitle,
+  icon = 'leaf-outline',
   onPress,
 }) => {
   const scaleAnim = React.useRef(new Animated.Value(1)).current;
@@ -34,65 +36,86 @@ export const QuickActionCard: React.FC<QuickActionCardProps> = ({
   };
 
   return (
-    <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+    <Animated.View style={[styles.wrapper, { transform: [{ scale: scaleAnim }] }]}>
       <TouchableOpacity
-        style={[styles.touchable, Shadows.card]}
+        style={styles.touchable}
         onPress={onPress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         activeOpacity={0.9}
         accessibilityLabel={title}
       >
-        <LinearGradient
-          colors={['#FFFFFF', '#FAF8F4']} // White to soft warm cream gradient
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.container}
-        >
-          <View style={styles.iconContainer}>
-            <Ionicons name={icon} size={20} color={Colors.primary[600]} />
+        <View style={styles.container}>
+          <View style={styles.topRow}>
+            <View style={styles.iconContainer}>
+              <Ionicons name={icon} size={22} color="#187A3D" />
+            </View>
+            <Ionicons name="chevron-forward" size={16} color="#187A3D" />
           </View>
-          <Text style={styles.title} numberOfLines={3}>
-            {title}
-          </Text>
-          <Ionicons name="arrow-forward" size={14} color={Colors.primary[500]} style={styles.arrow} />
-        </LinearGradient>
+          <View style={styles.textContainer}>
+            <Text style={styles.title} numberOfLines={2}>
+              {title}
+            </Text>
+            {subtitle && (
+              <Text style={styles.subtitle} numberOfLines={1}>
+                {subtitle}
+              </Text>
+            )}
+          </View>
+        </View>
       </TouchableOpacity>
     </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
+  wrapper: {
+    width: '48%',
+    marginBottom: 12,
+  },
   touchable: {
-    borderRadius: 20, // 20px border radius
+    borderRadius: 20,
     overflow: 'hidden',
-    width: 150,
-    height: 130,
-    borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#DDE5E0',
+    shadowColor: '#187A3D',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    elevation: 2,
   },
   container: {
-    flex: 1,
-    padding: Spacing.md,
-    alignItems: 'flex-start',
+    padding: 14,
+    minHeight: 115,
+    justifyContent: 'space-between',
+  },
+  topRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
   },
   iconContainer: {
-    width: 38,
-    height: 38,
-    borderRadius: 12,
-    backgroundColor: Colors.primary[50],
+    width: 40,
+    height: 40,
+    borderRadius: 14,
+    backgroundColor: '#EAF6EE',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  title: {
-    fontSize: 12,
-    fontWeight: '800',
-    color: Colors.text.primary,
-    lineHeight: 16,
-    marginTop: Spacing.xs,
+  textContainer: {
+    marginTop: 8,
   },
-  arrow: {
-    alignSelf: 'flex-end',
+  title: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#172033',
+    lineHeight: 19,
+  },
+  subtitle: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#5F6B7A',
+    marginTop: 2,
   },
 });
