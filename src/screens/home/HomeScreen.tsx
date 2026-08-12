@@ -19,11 +19,12 @@ import { useSchemes } from '../../hooks/useSchemes';
 import { useNotifications } from '../../hooks/useNotifications';
 import { useLanguageContext } from '../../contexts/LanguageContext';
 import { useThemeContext } from '../../contexts/ThemeContext';
+import { getLocalizedScheme } from '../../utils/schemeLocalization';
 import { HomeScreenProps } from '../../navigation/types';
 import { Scheme, Notification } from '../../types/api.types';
 
 export const HomeScreen: React.FC<HomeScreenProps<'Home'>> = ({ navigation }) => {
-  const { t } = useLanguageContext();
+  const { t, selectedLanguage } = useLanguageContext();
   const { isDarkMode, colors: themeColors } = useThemeContext();
   const schemesQuery = useSchemes({ limit: 6 });
   const notificationsQuery = useNotifications();
@@ -84,10 +85,10 @@ export const HomeScreen: React.FC<HomeScreenProps<'Home'>> = ({ navigation }) =>
   };
 
   // Extract schemes from Query data or fallback list
-  const fetchedSchemes: Scheme[] =
+  const rawHomeSchemes: Scheme[] =
     schemesQuery.data?.pages?.[0]?.data?.items || [
       {
-        id: 's1',
+        id: 'pm-kisan-samman-nidhi',
         title: t('scheme1Title') || 'PM-Kisan Samman Nidhi',
         description: t('scheme1Desc') || 'Financial support of ₹6,000 per year for farmer families across India.',
         category: 'Direct Income Support',
@@ -96,16 +97,16 @@ export const HomeScreen: React.FC<HomeScreenProps<'Home'>> = ({ navigation }) =>
         benefits: '3 equal installments of ₹2,000 directly transferred to bank account.',
       },
       {
-        id: 's2',
-        title: t('scheme2Title') || 'PM Fasal Bima Yojana',
-        description: t('scheme2Desc') || 'Comprehensive crop insurance against natural calamities & pest attacks.',
-        category: 'Crop Insurance',
-        type: 'Central',
-        amount: 'Up to 90% Subsidy',
-        benefits: 'Low premium (1.5% - 2%) for seasonal food & oilseed crops.',
+        id: 'bhausaheb-fundkar-falbag-lagvad-yojana',
+        title: 'Bhausaheb Fundkar Falbag Lagvad Yojana',
+        description: 'Subsidy support for orchard plantation and long-term horticulture crops.',
+        category: 'Horticulture',
+        type: 'State',
+        amount: 'Up to 50% subsidy',
+        benefits: 'Plantation subsidy, sapling support, and orchard development assistance.',
       },
       {
-        id: 's3',
+        id: 'sub-mission-on-agricultural-mechanization-css',
         title: t('scheme3Title') || 'Sub-Mission on Agricultural Mechanization',
         description: t('scheme3Desc') || 'Subsidy on purchase of modern farm machinery, tractors & implements.',
         category: 'Machinery Subsidy',
@@ -114,15 +115,17 @@ export const HomeScreen: React.FC<HomeScreenProps<'Home'>> = ({ navigation }) =>
         benefits: 'Financial assistance for modern machinery & custom hiring centers.',
       },
       {
-        id: 's4',
-        title: t('scheme4Title') || 'Soil Health Card Scheme',
-        description: t('scheme4Desc') || 'Free soil testing & customized crop fertilizer recommendation card.',
-        category: 'Soil Health',
-        type: 'Central',
-        amount: '100% Free Testing',
-        benefits: 'Detailed nutrient status of soil & dosage advisory.',
+        id: 'chief-minister-sustainable-agriculture-irrigation-scheme',
+        title: 'Chief Minister Sustainable Agriculture Irrigation Scheme',
+        description: 'Promotes efficient water use through micro irrigation and on-farm storage.',
+        category: 'Irrigation',
+        type: 'State',
+        amount: 'Up to 55% subsidy',
+        benefits: 'Micro irrigation, farm ponds, and sustainable water management support.',
       },
     ];
+
+  const fetchedSchemes = rawHomeSchemes.map((s) => getLocalizedScheme(s, selectedLanguage.code));
 
   // Extract notifications / updates data
   const fetchedUpdates: Notification[] =

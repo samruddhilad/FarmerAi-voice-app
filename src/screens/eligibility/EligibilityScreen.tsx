@@ -20,6 +20,7 @@ import { useLanguageContext } from '../../contexts/LanguageContext';
 import { Header } from '../../components/layout/Header';
 import { SchemeCard } from '../../components/cards/SchemeCard';
 import { MOCK_SCHEMES } from '../../services/schemeService';
+import { getLocalizedScheme } from '../../utils/schemeLocalization';
 import { EligibilityScreenProps } from '../../navigation/types';
 import { Scheme } from '../../types/api.types';
 
@@ -64,7 +65,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps<'EligibilityForm
 
       // General fallback
       return scheme.is_featured || scheme.category === 'Irrigation' || scheme.category === 'Farmer Welfare';
-    });
+    }).map((scheme) => getLocalizedScheme(scheme, selectedLanguage.code));
   };
 
   const matchingSchemes = getMatchingSchemes();

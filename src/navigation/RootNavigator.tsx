@@ -8,12 +8,8 @@ import { RootStackParamList } from './types';
 import { useAuthContext } from '../contexts/AuthContext';
 import { AuthStack } from './AuthStack';
 import { MainTabs } from './MainTabs';
-<<<<<<< HEAD
-import { SplashScreen } from '../screens/auth/SplashScreen';
-=======
 import { LoadingScreen } from '../screens/support/SupportScreens';
 import SplashScreen from '../screens/splash/SplashScreen';
->>>>>>> 4a4f7b94162da68f4aa1690ee3d8ab8f520e2235
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

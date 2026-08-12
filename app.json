@@ -14,7 +14,8 @@
       }
     },
     "plugins": [
-      "expo-dev-client"
+      "expo-dev-client",
+      "expo-splash-screen"
     ],
     "android": {
       "adaptiveIcon": {

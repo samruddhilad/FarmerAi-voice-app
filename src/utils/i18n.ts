@@ -609,7 +609,7 @@ export const translations: Record<SupportedLanguage, Record<string, string>> = {
     loadingMore: 'Loading more...',
     noSchemesFound: 'No schemes found',
     noSchemesSub: 'Try a different category or search term.',
-    benefitLabel: 'BENEFIT',
+    benefitLabel: 'BENEFIT / SUBSIDY',
     centralType: 'CENTRAL',
     stateType: 'STATE',
     schemeDetailsTitle: 'Scheme Details',
