@@ -1,5 +1,5 @@
 /**
- * ThemeContext — Light & Dark Mode state management
+ * ThemeContext — Light Mode Default & Dark Mode Toggle State Management
  */
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
@@ -26,7 +26,8 @@ const THEME_KEY = 'app_theme_dark_mode';
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  // Light Mode is default
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
   useEffect(() => {
     loadTheme();
@@ -37,9 +38,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const saved = await AsyncStorage.getItem(THEME_KEY);
       if (saved !== null) {
         setIsDarkMode(JSON.parse(saved));
+      } else {
+        setIsDarkMode(false);
       }
     } catch {
-      // default light
+      setIsDarkMode(false);
     }
   };
 

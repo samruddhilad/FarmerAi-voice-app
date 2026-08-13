@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Colors, Spacing, Shadows } from '../../theme';
+import { Colors, Spacing } from '../../theme';
+import { useThemeContext } from '../../contexts/ThemeContext';
 
 interface QuickActionCardProps {
   title: string;
@@ -17,6 +17,7 @@ export const QuickActionCard: React.FC<QuickActionCardProps> = ({
   icon = 'leaf-outline',
   onPress,
 }) => {
+  const { isDarkMode, colors: themeColors } = useThemeContext();
   const scaleAnim = React.useRef(new Animated.Value(1)).current;
 
   const handlePressIn = () => {
@@ -35,10 +36,19 @@ export const QuickActionCard: React.FC<QuickActionCardProps> = ({
     }).start();
   };
 
+  const greenAccent = isDarkMode ? '#6EE7B7' : '#187A3D';
+  const iconBg = isDarkMode ? '#064E3B' : '#EAF6EE';
+
   return (
     <Animated.View style={[styles.wrapper, { transform: [{ scale: scaleAnim }] }]}>
       <TouchableOpacity
-        style={styles.touchable}
+        style={[
+          styles.touchable,
+          {
+            backgroundColor: themeColors.card,
+            borderColor: themeColors.border,
+          },
+        ]}
         onPress={onPress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
@@ -47,17 +57,17 @@ export const QuickActionCard: React.FC<QuickActionCardProps> = ({
       >
         <View style={styles.container}>
           <View style={styles.topRow}>
-            <View style={styles.iconContainer}>
-              <Ionicons name={icon} size={22} color="#187A3D" />
+            <View style={[styles.iconContainer, { backgroundColor: iconBg }]}>
+              <Ionicons name={icon} size={22} color={greenAccent} />
             </View>
-            <Ionicons name="chevron-forward" size={16} color="#187A3D" />
+            <Ionicons name="chevron-forward" size={16} color={greenAccent} />
           </View>
           <View style={styles.textContainer}>
-            <Text style={styles.title} numberOfLines={2}>
+            <Text style={[styles.title, { color: themeColors.textPrimary }]} numberOfLines={2}>
               {title}
             </Text>
             {subtitle && (
-              <Text style={styles.subtitle} numberOfLines={1}>
+              <Text style={[styles.subtitle, { color: themeColors.textSecondary }]} numberOfLines={1}>
                 {subtitle}
               </Text>
             )}
@@ -76,9 +86,7 @@ const styles = StyleSheet.create({
   touchable: {
     borderRadius: 20,
     overflow: 'hidden',
-    backgroundColor: '#FFFFFF',
     borderWidth: 1,
-    borderColor: '#DDE5E0',
     shadowColor: '#187A3D',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.04,
@@ -99,7 +107,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 14,
-    backgroundColor: '#EAF6EE',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -109,13 +116,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 15,
     fontWeight: '800',
-    color: '#172033',
     lineHeight: 19,
   },
   subtitle: {
     fontSize: 12,
     fontWeight: '500',
-    color: '#5F6B7A',
     marginTop: 2,
   },
 });

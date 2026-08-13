@@ -1,5 +1,5 @@
 /**
- * Schemes List Screen — Clean Green Farmer AI Theme with Global i18n & Back Button
+ * Schemes List Screen — Clean Green Farmer AI Theme with Global i18n & ThemeContext
  */
 
 import React, { useState } from 'react';
@@ -20,17 +20,13 @@ import { SkeletonSchemeCard } from '../../components/common/SkeletonLoader';
 import { EmptyState } from '../../components/common/EmptyState';
 import { useSchemes, useSchemeCategories } from '../../hooks/useSchemes';
 import { useLanguageContext } from '../../contexts/LanguageContext';
+import { useThemeContext } from '../../contexts/ThemeContext';
 import { Header } from '../../components/layout/Header';
 import { getLocalizedScheme, getLocalizedCategoryName } from '../../utils/schemeLocalization';
 import { SchemesScreenProps } from '../../navigation/types';
 import { Scheme } from '../../types/api.types';
 
-// Green Theme Constants
-const PRIMARY_GREEN = '#16803A';
-const DARK_GREEN = '#0B5D2A';
-const LIGHT_GREEN_BG = '#EAF7EC';
-const VERY_LIGHT_BG = '#F5FBF5';
-const BORDER_GREEN = '#D1E7D6';
+const PRIMARY_GREEN = '#187A3D';
 
 export const SchemesListScreen: React.FC<SchemesScreenProps<'SchemesList'>> = ({
   navigation,
@@ -38,6 +34,8 @@ export const SchemesListScreen: React.FC<SchemesScreenProps<'SchemesList'>> = ({
 }) => {
   const insets = useSafeAreaInsets();
   const { t, selectedLanguage } = useLanguageContext();
+  const { isDarkMode, colors: themeColors } = useThemeContext();
+
   const [selectedCategory, setSelectedCategory] = useState(route.params?.category || 'All');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -74,14 +72,6 @@ export const SchemesListScreen: React.FC<SchemesScreenProps<'SchemesList'>> = ({
     }
   };
 
-  const handleBack = () => {
-    if (navigation.canGoBack()) {
-      navigation.goBack();
-    } else {
-      navigation.navigate('HomeTab' as any);
-    }
-  };
-
   const renderHeader = () => (
     <View style={styles.headerBlock}>
       {/* Search Bar */}
@@ -91,7 +81,11 @@ export const SchemesListScreen: React.FC<SchemesScreenProps<'SchemesList'>> = ({
           onChangeText={setSearchQuery}
           placeholder={t('searchPlaceholder') || 'योजना किंवा विषय शोधा...'}
           iconColor={PRIMARY_GREEN}
-          containerStyle={styles.searchContainerStyle}
+          containerStyle={{
+            ...styles.searchContainerStyle,
+            backgroundColor: themeColors.card,
+            borderColor: themeColors.border,
+          }}
         />
       </View>
 
@@ -108,16 +102,57 @@ export const SchemesListScreen: React.FC<SchemesScreenProps<'SchemesList'>> = ({
 
           return (
             <TouchableOpacity
-              style={[styles.categoryTab, isActive ? styles.categoryTabActive : styles.categoryTabInactive]}
+              style={[
+                styles.categoryTab,
+                {
+                  backgroundColor: isActive
+                    ? PRIMARY_GREEN
+                    : isDarkMode
+                    ? themeColors.card
+                    : '#EAF6EE',
+                  borderColor: isActive ? PRIMARY_GREEN : themeColors.border,
+                },
+              ]}
               onPress={() => setSelectedCategory(item.name)}
               activeOpacity={0.85}
             >
-              <Text style={[styles.categoryText, isActive ? styles.categoryTextActive : styles.categoryTextInactive]}>
+              <Text
+                style={[
+                  styles.categoryText,
+                  {
+                    color: isActive
+                      ? Colors.white
+                      : themeColors.textPrimary,
+                  },
+                ]}
+              >
                 {translatedCatName}
               </Text>
               {item.count ? (
-                <View style={[styles.countBadge, isActive ? styles.countBadgeActive : styles.countBadgeInactive]}>
-                  <Text style={[styles.categoryCount, isActive ? styles.categoryCountActive : styles.categoryCountInactive]}>
+                <View
+                  style={[
+                    styles.countBadge,
+                    {
+                      backgroundColor: isActive
+                        ? 'rgba(255, 255, 255, 0.25)'
+                        : isDarkMode
+                        ? 'rgba(255, 255, 255, 0.1)'
+                        : 'rgba(24, 122, 61, 0.12)',
+                    },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.categoryCount,
+                      {
+                        color: isActive
+                          ? Colors.white
+                          : isDarkMode
+                          ? '#6EE7B7'
+                          : PRIMARY_GREEN,
+                      },
+                    ]}
+                  >
                     {item.count}
                   </Text>
                 </View>
@@ -128,13 +163,27 @@ export const SchemesListScreen: React.FC<SchemesScreenProps<'SchemesList'>> = ({
       />
 
       {/* Scheme Count Label */}
-      <Text style={styles.countText}>{t('schemesCount', { count: totalSchemes })}</Text>
+      <Text
+        style={[
+          styles.countText,
+          { color: isDarkMode ? '#6EE7B7' : PRIMARY_GREEN },
+        ]}
+      >
+        {t('schemesCount', { count: totalSchemes })}
+      </Text>
     </View>
   );
 
   if (schemesQuery.isLoading) {
     return (
-      <View style={[styles.container, { paddingTop: insets.top + Spacing.sm }]}>
+      <View style={[styles.container, { backgroundColor: themeColors.background, paddingTop: insets.top + Spacing.sm }]}>
+        <Header
+          title={t('schemesPageTitle') || 'शासकीय योजना'}
+          subtitle={t('schemesPageSubtitle') || '२० निवडक कृषी योजना'}
+          showLanguageSelector
+          onNotificationPress={() => navigation.navigate('HomeTab', { screen: 'Notifications' } as any)}
+          onProfilePress={() => navigation.navigate('ProfileTab', { screen: 'Profile' } as any)}
+        />
         {renderHeader()}
         <View style={styles.loadingContainer}>
           {[1, 2].map((item) => (
@@ -148,11 +197,13 @@ export const SchemesListScreen: React.FC<SchemesScreenProps<'SchemesList'>> = ({
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: themeColors.background }]}>
       <Header
         title={t('schemesPageTitle') || 'शासकीय योजना'}
         subtitle={t('schemesPageSubtitle') || '२० निवडक कृषी योजना'}
         showLanguageSelector
+        onNotificationPress={() => navigation.navigate('HomeTab', { screen: 'Notifications' } as any)}
+        onProfilePress={() => navigation.navigate('ProfileTab', { screen: 'Profile' } as any)}
       />
       <FlatList
         data={schemes}
@@ -181,7 +232,9 @@ export const SchemesListScreen: React.FC<SchemesScreenProps<'SchemesList'>> = ({
         ListFooterComponent={
           schemesQuery.isFetchingNextPage ? (
             <View style={styles.loadingMore}>
-              <Text style={styles.loadingText}>{t('loadingMore')}</Text>
+              <Text style={[styles.loadingText, { color: themeColors.textSecondary }]}>
+                {t('loadingMore')}
+              </Text>
             </View>
           ) : (
             <View style={{ height: Spacing['5xl'] }} />
@@ -195,139 +248,49 @@ export const SchemesListScreen: React.FC<SchemesScreenProps<'SchemesList'>> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: VERY_LIGHT_BG,
   },
   headerBlock: {
     paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.sm,
     paddingBottom: Spacing.md,
   },
-  topRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: Spacing.lg,
-  },
-  brandRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  backCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: LIGHT_GREEN_BG,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: BORDER_GREEN,
-    marginRight: 2,
-  },
-  brandIcon: {
-    width: 46,
-    height: 46,
-    borderRadius: 23,
-    backgroundColor: DARK_GREEN,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  brandIconText: {
-    color: Colors.white,
-    fontSize: 20,
-    fontWeight: '800',
-  },
-  screenTitle: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: DARK_GREEN,
-    lineHeight: 26,
-  },
-  screenSubtitle: {
-    fontSize: 12,
-    color: '#2D5A3B',
-    marginTop: 2,
-    fontWeight: '500',
-  },
-  actionsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.xs,
-  },
-  circleAction: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: LIGHT_GREEN_BG,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: BORDER_GREEN,
-  },
   searchWrap: {
-    marginBottom: Spacing.lg,
+    marginBottom: Spacing.md,
   },
   searchContainerStyle: {
-    backgroundColor: Colors.white,
-    borderColor: BORDER_GREEN,
     borderRadius: 16,
     height: 50,
+    borderWidth: 1,
   },
   categoryList: {
     gap: 8,
-    paddingBottom: Spacing.md,
+    paddingBottom: Spacing.sm,
   },
   categoryTab: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
+    paddingVertical: 9,
+    paddingHorizontal: 15,
     borderRadius: 24,
     borderWidth: 1,
-  },
-  categoryTabActive: {
-    backgroundColor: DARK_GREEN,
-    borderColor: DARK_GREEN,
-  },
-  categoryTabInactive: {
-    backgroundColor: LIGHT_GREEN_BG,
-    borderColor: BORDER_GREEN,
   },
   categoryText: {
     fontSize: 13,
     fontWeight: '700',
-  },
-  categoryTextActive: {
-    color: Colors.white,
-  },
-  categoryTextInactive: {
-    color: DARK_GREEN,
   },
   countBadge: {
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 10,
   },
-  countBadgeActive: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-  },
-  countBadgeInactive: {
-    backgroundColor: 'rgba(11, 93, 42, 0.1)',
-  },
   categoryCount: {
     fontSize: 11,
     fontWeight: '800',
   },
-  categoryCountActive: {
-    color: Colors.white,
-  },
-  categoryCountInactive: {
-    color: DARK_GREEN,
-  },
   countText: {
     fontSize: 14,
     fontWeight: '800',
-    color: DARK_GREEN,
     marginTop: Spacing.xs,
     marginBottom: 4,
   },
@@ -348,6 +311,5 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     ...Typography.bodySm,
-    color: DARK_GREEN,
   },
 });

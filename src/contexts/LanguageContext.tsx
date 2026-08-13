@@ -1,5 +1,5 @@
 /**
- * LanguageContext — Language preference state management
+ * LanguageContext — Marathi ('mr') as Default Language State Management
  */
 
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
@@ -14,7 +14,7 @@ interface LanguageContextType {
   t: (key: string, params?: Record<string, any>) => string;
 }
 
-const DEFAULT_LANGUAGE: Language = { code: 'mr', name: 'मराठी' };
+export const DEFAULT_LANGUAGE: Language = { code: 'mr', name: 'मराठी' };
 const LANGUAGE_KEY = 'app_selected_language';
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -31,13 +31,18 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     try {
       const saved = await AsyncStorage.getItem(LANGUAGE_KEY);
       if (saved) {
-        setSelectedLanguage(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === 'object' && parsed.code) {
+          setSelectedLanguage(parsed);
+          return;
+        }
       }
     } catch {
-      // Use default
+      // Use default Marathi
     } finally {
       setIsLoading(false);
     }
+    setSelectedLanguage(DEFAULT_LANGUAGE);
   };
 
   const setLanguage = useCallback(async (language: Language) => {

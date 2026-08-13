@@ -169,7 +169,7 @@ export const SchemeDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
   ];
 
   return (
-    <View style={[styles.container, { backgroundColor: isDarkMode ? themeColors.background : '#F5FBF5' }]}> 
+    <View style={[styles.container, { backgroundColor: themeColors.background }]}>
       {/* Top Header with Back Button & Language Selector */}
       <Header
         showBack
@@ -179,7 +179,7 @@ export const SchemeDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
       />
 
       {/* Sticky / Scrollable Horizontal Section Navigation Bar */}
-      <View style={[styles.tabBarWrapper, { backgroundColor: isDarkMode ? themeColors.card : '#FFFFFF' }]}>
+      <View style={[styles.tabBarWrapper, { backgroundColor: themeColors.card, borderBottomColor: themeColors.border }]}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabScrollContent}>
           {tabs.map((tItem) => {
             const isActive = activeTab === tItem.key;
@@ -187,10 +187,29 @@ export const SchemeDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
               <TouchableOpacity
                 key={tItem.key}
                 onPress={() => handleTabPress(tItem.key)}
-                style={[styles.tabChip, isActive && styles.tabChipActive]}
+                style={[
+                  styles.tabChip,
+                  {
+                    backgroundColor: isActive
+                      ? (isDarkMode ? '#059669' : PRIMARY_GREEN)
+                      : (isDarkMode ? themeColors.surface : LIGHT_GREEN_BG),
+                    borderColor: isActive
+                      ? (isDarkMode ? '#059669' : PRIMARY_GREEN)
+                      : themeColors.border,
+                  },
+                ]}
                 activeOpacity={0.8}
               >
-                <Text style={[styles.tabChipText, isActive && styles.tabChipTextActive]}>
+                <Text
+                  style={[
+                    styles.tabChipText,
+                    {
+                      color: isActive
+                        ? '#FFFFFF'
+                        : themeColors.textPrimary,
+                    },
+                  ]}
+                >
                   {tItem.label}
                 </Text>
               </TouchableOpacity>
@@ -207,7 +226,7 @@ export const SchemeDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
       >
         {/* Scheme Hero Header Card */}
         <LinearGradient
-          colors={['#16803A', '#0B5D2A']}
+          colors={isDarkMode ? ['#064E3B', '#022C22'] : ['#187A3D', '#126B35']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.heroCard}
@@ -505,9 +524,21 @@ export const SchemeDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
       </ScrollView>
 
       {/* Floating Quick Apply Action Bar */}
-      <View style={[styles.bottomActionBar, { paddingBottom: insets.bottom + 12 }]}>
+      <View
+        style={[
+          styles.bottomActionBar,
+          {
+            backgroundColor: themeColors.card,
+            borderTopColor: themeColors.border,
+            paddingBottom: insets.bottom + 12,
+          },
+        ]}
+      >
         <TouchableOpacity
-          style={styles.bottomApplyBtn}
+          style={[
+            styles.bottomApplyBtn,
+            { backgroundColor: isDarkMode ? '#059669' : PRIMARY_GREEN },
+          ]}
           activeOpacity={0.88}
           onPress={() => handleOpenUrl(officialUrl)}
         >

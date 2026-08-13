@@ -28,7 +28,7 @@ export const RootNavigator: React.FC = () => {
   }
 
   if (isLoading) {
-    return <SplashScreen />;
+    return <SplashScreen onFinish={handleSplashFinish} />;
   }
 
   return (

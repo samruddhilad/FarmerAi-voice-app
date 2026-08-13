@@ -5,7 +5,7 @@ import { Colors, Spacing } from '../../theme';
 import { Scheme } from '../../types/api.types';
 import { getCategoryIcon } from '../../utils/category';
 import { useLanguageContext } from '../../contexts/LanguageContext';
-import { getCategoryTranslation } from '../../utils/i18n';
+import { useThemeContext } from '../../contexts/ThemeContext';
 import { getLocalizedScheme } from '../../utils/schemeLocalization';
 
 interface SchemeCardProps {
@@ -16,6 +16,7 @@ interface SchemeCardProps {
 
 export const SchemeCard: React.FC<SchemeCardProps> = ({ scheme, onPress, compact = false }) => {
   const { t, selectedLanguage } = useLanguageContext();
+  const { isDarkMode, colors: themeColors } = useThemeContext();
   const locScheme = getLocalizedScheme(scheme, selectedLanguage.code);
 
   const iconName = getCategoryIcon(scheme.category || locScheme.category);
@@ -24,11 +25,11 @@ export const SchemeCard: React.FC<SchemeCardProps> = ({ scheme, onPress, compact
     ? locScheme.category
     : (locScheme.type === 'Central' ? t('centralType') : t('stateType'));
 
-  // Design Tokens
-  const primaryGreen = '#187A3D';
-  const lightGreenBg = '#EAF6EE';
-  const textDark = '#172033';
-  const textGray = '#5F6B7A';
+  // Theme-aware design tokens
+  const primaryGreen = isDarkMode ? '#6EE7B7' : '#187A3D';
+  const lightGreenBg = isDarkMode ? '#064E3B' : '#EAF6EE';
+  const textDark = themeColors.textPrimary;
+  const textGray = themeColors.textSecondary;
 
   return (
     <TouchableOpacity
@@ -37,7 +38,15 @@ export const SchemeCard: React.FC<SchemeCardProps> = ({ scheme, onPress, compact
       style={[styles.pressable, compact ? styles.compactWidth : styles.horizontalWidth]}
       accessibilityLabel={`Scheme: ${scheme.title}`}
     >
-      <View style={styles.container}>
+      <View
+        style={[
+          styles.container,
+          {
+            backgroundColor: themeColors.card,
+            borderColor: themeColors.border,
+          },
+        ]}
+      >
         {/* Top Row: Green Icon Container & Green Category Pill */}
         <View style={styles.topRow}>
           <View style={[styles.iconContainer, { backgroundColor: lightGreenBg }]}>
@@ -61,8 +70,20 @@ export const SchemeCard: React.FC<SchemeCardProps> = ({ scheme, onPress, compact
         </Text>
 
         {/* Benefit Block */}
-        <View style={styles.benefitBlock}>
-          <Text style={styles.benefitLabel}>{t('benefitLabel') || 'BENEFIT'}</Text>
+        <View
+          style={[
+            styles.benefitBlock,
+            { backgroundColor: isDarkMode ? '#1F2937' : '#F3FAF5' },
+          ]}
+        >
+          <Text
+            style={[
+              styles.benefitLabel,
+              { color: isDarkMode ? '#34D399' : '#126B35' },
+            ]}
+          >
+            {t('benefitLabel') || 'BENEFIT'}
+          </Text>
           <Text style={[styles.benefitText, { color: primaryGreen }]} numberOfLines={1}>
             {benefitText}
           </Text>
@@ -94,11 +115,9 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
     borderRadius: 20,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#DDE5E0',
     justifyContent: 'space-between',
     shadowColor: '#187A3D',
     shadowOffset: { width: 0, height: 3 },
@@ -142,7 +161,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   benefitBlock: {
-    backgroundColor: '#F3FAF5',
     paddingVertical: 6,
     paddingHorizontal: 10,
     borderRadius: 10,
@@ -151,7 +169,6 @@ const styles = StyleSheet.create({
   benefitLabel: {
     fontSize: 10,
     fontWeight: '800',
-    color: '#126B35',
     letterSpacing: 0.6,
     textTransform: 'uppercase',
     marginBottom: 2,

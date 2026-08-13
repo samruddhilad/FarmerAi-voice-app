@@ -5,6 +5,7 @@
  * - Uses react-native-reanimated for 60fps spring & fade entrance/exit animations
  * - Interacts with expo-splash-screen to prevent white/black flash
  * - Respects global language state from LanguageContext (AsyncStorage app_selected_language)
+ * - Respects global theme state from ThemeContext (defaults to Light Mode)
  * - Renders Krishi Mitra leaf logo with soft outer pulse ring and subtle agricultural decorations
  * - Props: { onFinish?: () => void }
  * - Exported as default component matching specification
@@ -30,6 +31,7 @@ import * as SplashScreenNative from 'expo-splash-screen';
 
 import { useAuthContext } from '../../contexts/AuthContext';
 import { useLanguageContext } from '../../contexts/LanguageContext';
+import { useThemeContext } from '../../contexts/ThemeContext';
 
 // Keep native splash screen visible while JS loads
 try {
@@ -47,6 +49,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish, navigation
   const insets = useSafeAreaInsets();
   const { isAuthenticated, isLoading } = useAuthContext();
   const { t } = useLanguageContext();
+  const { isDarkMode, colors: themeColors } = useThemeContext();
 
   // Reanimated Shared Values
   const logoScale = useSharedValue(0.8);
@@ -159,10 +162,16 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish, navigation
     opacity: footerOpacity.value,
   }));
 
+  const bgGradient = isDarkMode
+    ? (['#111827', '#1F2937', '#111827'] as [string, string, string])
+    : (['#F3FAF5', '#EAF6EE', '#F7F9F7'] as [string, string, string]);
+
+  const greenAccent = isDarkMode ? '#6EE7B7' : '#187A3D';
+
   return (
-    <Animated.View style={[styles.outerFlex, containerAnimatedStyle]}>
+    <Animated.View style={[styles.outerFlex, containerAnimatedStyle, { backgroundColor: themeColors.background }]}>
       <LinearGradient
-        colors={['#F3FAF5', '#EAF6EE', '#F7F9F7']}
+        colors={bgGradient}
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 1 }}
         style={[
@@ -174,42 +183,42 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish, navigation
         ]}
       >
         {/* Subtle Background Accent Blobs */}
-        <View style={styles.bgBlobTopRight} />
-        <View style={styles.bgBlobBottomLeft} />
+        <View style={[styles.bgBlobTopRight, isDarkMode && { backgroundColor: 'rgba(6, 78, 59, 0.3)' }]} />
+        <View style={[styles.bgBlobBottomLeft, isDarkMode && { backgroundColor: 'rgba(17, 24, 39, 0.8)' }]} />
 
         {/* Centered Composition */}
         <View style={styles.centerWrapper}>
           {/* Logo Container with Soft Pulse Ring */}
           <Animated.View style={[styles.logoWrapper, logoAnimatedStyle]}>
-            <Animated.View style={[styles.pulseRing, pulseAnimatedStyle]} />
+            <Animated.View style={[styles.pulseRing, pulseAnimatedStyle, isDarkMode && { backgroundColor: 'rgba(16, 185, 129, 0.2)' }]} />
 
             {/* Primary Green Circle Logo Card */}
-            <View style={styles.primaryLogoCard}>
+            <View style={[styles.primaryLogoCard, isDarkMode && { backgroundColor: '#059669' }]}>
               <Ionicons name="leaf" size={44} color="#FFFFFF" />
             </View>
 
             {/* Subtle Side Decorative Leaf Badges */}
-            <View style={[styles.sideLeafBadge, styles.sideLeafLeft]}>
-              <Ionicons name="leaf-outline" size={14} color="#187A3D" />
+            <View style={[styles.sideLeafBadge, styles.sideLeafLeft, { backgroundColor: themeColors.card, borderColor: themeColors.border }]}>
+              <Ionicons name="leaf-outline" size={14} color={greenAccent} />
             </View>
-            <View style={[styles.sideLeafBadge, styles.sideLeafRight]}>
-              <Ionicons name="sparkles" size={14} color="#187A3D" />
+            <View style={[styles.sideLeafBadge, styles.sideLeafRight, { backgroundColor: themeColors.card, borderColor: themeColors.border }]}>
+              <Ionicons name="sparkles" size={14} color={greenAccent} />
             </View>
           </Animated.View>
 
           {/* App Name & Branding */}
           <Animated.View style={[styles.titleWrapper, titleAnimatedStyle]}>
-            <Text style={styles.appTitle}>{t('krishiMitra') || 'Krishi Mitra'}</Text>
+            <Text style={[styles.appTitle, { color: themeColors.textPrimary }]}>{t('krishiMitra') || 'Krishi Mitra'}</Text>
 
-            <View style={styles.brandBadge}>
-              <Ionicons name="hardware-chip-outline" size={13} color="#187A3D" />
-              <Text style={styles.brandBadgeText}>Farmer AI • VOICE ASSISTANT</Text>
+            <View style={[styles.brandBadge, { backgroundColor: isDarkMode ? '#064E3B' : '#EAF6EE', borderColor: isDarkMode ? '#047857' : '#C8E6D1' }]}>
+              <Ionicons name="hardware-chip-outline" size={13} color={greenAccent} />
+              <Text style={[styles.brandBadgeText, { color: greenAccent }]}>Farmer AI • VOICE ASSISTANT</Text>
             </View>
           </Animated.View>
 
           {/* Localized Tagline */}
           <Animated.View style={[styles.taglineWrapper, taglineAnimatedStyle]}>
-            <Text style={styles.taglineText}>
+            <Text style={[styles.taglineText, { color: themeColors.textSecondary }]}>
               {t('splashTagline') || 'Your smart farming companion'}
             </Text>
           </Animated.View>
@@ -218,15 +227,15 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish, navigation
         {/* Minimal Loading Indicator & Footer */}
         <Animated.View style={[styles.footerWrapper, footerAnimatedStyle]}>
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="small" color="#187A3D" />
+            <ActivityIndicator size="small" color={greenAccent} />
           </View>
 
-          <View style={styles.footerGovPill}>
-            <Ionicons name="shield-checkmark" size={14} color="#187A3D" />
-            <Text style={styles.footerGovText}>AI Powered Agriculture Platform</Text>
+          <View style={[styles.footerGovPill, { backgroundColor: themeColors.card, borderColor: themeColors.border }]}>
+            <Ionicons name="shield-checkmark" size={14} color={greenAccent} />
+            <Text style={[styles.footerGovText, { color: greenAccent }]}>AI Powered Agriculture Platform</Text>
           </View>
 
-          <Text style={styles.footerFarmerText}>Dedicated to Indian Farmers 🌾</Text>
+          <Text style={[styles.footerFarmerText, { color: themeColors.textSecondary }]}>Dedicated to Indian Farmers 🌾</Text>
         </Animated.View>
       </LinearGradient>
     </Animated.View>
@@ -238,7 +247,6 @@ export default SplashScreen;
 const styles = StyleSheet.create({
   outerFlex: {
     flex: 1,
-    backgroundColor: '#F3FAF5',
   },
   container: {
     flex: 1,
@@ -302,11 +310,9 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: '#EAF6EE',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#DDE5E0',
   },
   sideLeafLeft: {
     left: -24,
@@ -322,7 +328,6 @@ const styles = StyleSheet.create({
   appTitle: {
     fontSize: 34,
     fontWeight: '900',
-    color: '#172033',
     letterSpacing: -0.5,
     marginBottom: 8,
   },
@@ -330,18 +335,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#EAF6EE',
     paddingHorizontal: 12,
     paddingVertical: 5,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: '#C8E6D1',
     marginBottom: 16,
   },
   brandBadgeText: {
     fontSize: 12,
     fontWeight: '800',
-    color: '#187A3D',
     letterSpacing: 0.3,
   },
   taglineWrapper: {
@@ -350,7 +352,6 @@ const styles = StyleSheet.create({
   taglineText: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#5F6B7A',
     textAlign: 'center',
     lineHeight: 22,
   },
@@ -365,12 +366,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#FFFFFF',
     paddingHorizontal: 14,
     paddingVertical: 6,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#DDE5E0',
     shadowColor: '#187A3D',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.04,
@@ -380,11 +379,9 @@ const styles = StyleSheet.create({
   footerGovText: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#187A3D',
   },
   footerFarmerText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#5F6B7A',
   },
 });

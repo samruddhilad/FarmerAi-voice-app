@@ -17,6 +17,7 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 
 const FloatingCenterFab: React.FC<{ onPress: () => void; isFocused?: boolean }> = ({ onPress, isFocused }) => {
   const { t } = useLanguageContext();
+  const { isDarkMode } = useThemeContext();
   const pulseAnim = React.useRef(new Animated.Value(0)).current;
 
   React.useEffect(() => {
@@ -41,6 +42,10 @@ const FloatingCenterFab: React.FC<{ onPress: () => void; isFocused?: boolean }> 
     outputRange: [0.4, 0.15, 0],
   });
 
+  const labelColor = isFocused
+    ? (isDarkMode ? '#6EE7B7' : '#187A3D')
+    : (isDarkMode ? '#9CA3AF' : '#5F6B7A');
+
   return (
     <View style={styles.centerItemContainer}>
       <TouchableOpacity
@@ -52,13 +57,14 @@ const FloatingCenterFab: React.FC<{ onPress: () => void; isFocused?: boolean }> 
           style={[
             styles.rippleRing,
             {
+              backgroundColor: isDarkMode ? 'rgba(16, 185, 129, 0.2)' : '#EAF6EE',
               transform: [{ scale }],
               opacity,
             },
           ]}
         />
         <LinearGradient
-          colors={['#22C55E', '#187A3D']}
+          colors={isDarkMode ? ['#10B981', '#059669'] : ['#22C55E', '#187A3D']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.centerFab}
@@ -66,7 +72,9 @@ const FloatingCenterFab: React.FC<{ onPress: () => void; isFocused?: boolean }> 
           <Ionicons name="mic" size={26} color={Colors.white} />
         </LinearGradient>
       </TouchableOpacity>
-      <Text style={[styles.centerLabel, isFocused && styles.centerLabelActive]}>{t('agriMitraTab')}</Text>
+      <Text style={[styles.centerLabel, { color: labelColor }, isFocused && styles.centerLabelActive]}>
+        {t('agriMitraTab')}
+      </Text>
     </View>
   );
 };
@@ -77,8 +85,8 @@ const TabItem: React.FC<{
   activeIcon: keyof typeof Ionicons.glyphMap;
   inactiveIcon: keyof typeof Ionicons.glyphMap;
   onPress: () => void;
-  textColor: string;
-}> = ({ isFocused, label, activeIcon, inactiveIcon, onPress, textColor }) => {
+}> = ({ isFocused, label, activeIcon, inactiveIcon, onPress }) => {
+  const { isDarkMode, colors: themeColors } = useThemeContext();
   const scaleValue = React.useRef(new Animated.Value(isFocused ? 1.1 : 1)).current;
 
   React.useEffect(() => {
@@ -90,8 +98,9 @@ const TabItem: React.FC<{
     }).start();
   }, [isFocused]);
 
-  const activeColor = '#187A3D';
-  const inactiveColor = '#5F6B7A';
+  const activeColor = isDarkMode ? '#6EE7B7' : '#187A3D';
+  const inactiveColor = isDarkMode ? '#9CA3AF' : '#5F6B7A';
+  const activePillBg = isDarkMode ? '#064E3B' : '#EAF6EE';
   const color = isFocused ? activeColor : inactiveColor;
   const iconName = isFocused ? activeIcon : inactiveIcon;
 
@@ -104,7 +113,7 @@ const TabItem: React.FC<{
       <Animated.View
         style={[
           styles.tabItemInner,
-          isFocused && styles.tabItemActivePill,
+          isFocused && { backgroundColor: activePillBg },
           { transform: [{ scale: scaleValue }] },
         ]}
       >
@@ -205,7 +214,6 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
             activeIcon={regularTab.activeIcon}
             inactiveIcon={regularTab.inactiveIcon}
             onPress={onPress}
-            textColor={themeColors.textSecondary}
           />
         );
       })}
@@ -256,9 +264,6 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 16,
   },
-  tabItemActivePill: {
-    backgroundColor: '#EAF6EE',
-  },
   tabLabel: {
     fontSize: 11,
     fontWeight: '700',
@@ -295,16 +300,13 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: '#EAF6EE',
   },
   centerLabel: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#5F6B7A',
     marginTop: 2,
   },
   centerLabelActive: {
-    color: '#187A3D',
     fontWeight: '800',
   },
 });
